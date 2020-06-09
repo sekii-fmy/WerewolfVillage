@@ -1,0 +1,24 @@
+public enum Name
+    {
+        Gerd,
+        Walter,
+        Moritz,
+        Simson,
+        Thomas,
+        Nicolas,
+        Dieter,
+        Peter,
+        Liesa,
+        Albin,
+        Katharina,
+        Otto,
+        Joachim,
+        Pamela,
+        Jacob,
+        Regina,
+        Fridel,
+        Erna,
+        Clara,
+        Simon
+    }
+

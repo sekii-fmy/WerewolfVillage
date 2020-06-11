@@ -28,11 +28,11 @@ namespace WerewolfVillage
             mentalSpace = new MentalSpace(name);
         }
 
-        public void generateMentalAgent(ref List<Agent> agentList)
+        public void generateMentalAgent(List<Agent> agentList)
         {
             for(int i = 0; i < Form1.num_villager; i++)
             {
-                mentalSpace.mentalList.Add(new MentalAgent(ref agentList[i].name, ref agentList[i].role));
+                mentalSpace.mentalList.Add(agentList[i]);
             }
         }
 

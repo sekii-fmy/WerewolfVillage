@@ -11,7 +11,7 @@ namespace WerewolfVillage
     {
         string name;
 
-        public List<MentalAgent> mentalList = new List<MentalAgent>();
+        public List<Agent> mentalList = new List<Agent>();
 
         public MentalSpace(string name)
         {

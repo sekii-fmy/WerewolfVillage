@@ -15,8 +15,6 @@ namespace WerewolfVillage
 
         public MentalAgent(ref string name, ref Role role)
         {
-            this.name = name;
-            this.role = role.ToString();
             oppositeTable = new OppositeTable();
         }
     }

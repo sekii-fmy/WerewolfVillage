@@ -33,7 +33,7 @@ namespace WerewolfVillage
 
             for (int j = 0; j < Form1.num_villager; j++)
             {
-                agentList[j].generateMentalAgent(ref agentList);
+                agentList[j].generateMentalAgent(agentList);
             }
 
         }

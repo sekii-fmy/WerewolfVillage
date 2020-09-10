@@ -8,13 +8,14 @@ namespace WerewolfVillage
 {
     class MentalAgent
     {
-        public string name;             //名前
-        public string role;             //役職
-        public double reliability;      //信頼度
-        public OppositeTable oppositeTable; 
+        Agent agent;
+        public double reliability;           //信頼度
+        public OppositeTable oppositeTable;  //対応表
 
-        public MentalAgent(ref string name, ref Role role)
+        public MentalAgent(ref List<Agent> newAgent, int i)
         {
+            agent = newAgent[i];
+            reliability = 0;
             oppositeTable = new OppositeTable();
         }
     }

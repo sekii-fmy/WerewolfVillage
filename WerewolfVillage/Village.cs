@@ -9,7 +9,7 @@ namespace WerewolfVillage
 
     class Village
     {
-        public List<Agent> agentList = new List<Agent>();
+        public static List<Agent> agentList = new List<Agent>();
 
         /// <summary>
         /// 発話オブジェクト
@@ -24,16 +24,11 @@ namespace WerewolfVillage
         /// 始めに実行。村の住人の生成
         /// </summary>
         /// <param name="num_Villager"></param>
-        public void newVillage()
+        public Village()
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                agentList.Add(generateAgent(i, i.ToString()));
-            }
-
-            for (int j = 0; j < Form1.num_villager; j++)
-            {
-                agentList[j].generateMentalAgent(agentList);
+                agentList.Add(generateAgent(i, Form1.AgentName[i], Form1.AgentRole[i]));
             }
 
         }
@@ -43,13 +38,13 @@ namespace WerewolfVillage
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Agent generateAgent(int num, string name)
+        public Agent generateAgent(int num, string name, string role)
         {
             Agent agent = new Agent(name);
          
             //あとでvillagerの生成をいじって役職配分をランダムにする
             //いまは占、狼、狂、村、村の順に生成
-            switch (num)
+            switch (role)
             {
                 case 0:
                     agent.role = Role.SEER;

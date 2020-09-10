@@ -18,7 +18,6 @@ namespace WerewolfVillage
         {   
             //村の生成
             Village village = new Village();
-            village.newVillage();
 
             village.makeOutput();
         }

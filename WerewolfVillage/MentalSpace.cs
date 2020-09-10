@@ -11,11 +11,26 @@ namespace WerewolfVillage
     {
         string name;
 
-        public List<Agent> mentalList = new List<Agent>();
+        public List<MentalAgent> mentalAgentList = new List<MentalAgent>();
+
 
         public MentalSpace(string name)
         {
             this.name = name;
+            generateMentalAgent();
+            
+        }
+
+        /// <summary>
+        /// メンタルエージェントの生成
+        /// </summary>
+        void generateMentalAgent()
+        {
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                MentalAgent mentalAgent = new MentalAgent(ref Village.agentList, i);
+                mentalAgentList.Add(mentalAgent);
+            }
         }
 
 

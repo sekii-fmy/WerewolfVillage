@@ -6,6 +6,30 @@ using System.Threading.Tasks;
 
 namespace WerewolfVillage
 {
+    public enum CharactorName
+    {
+        楽天家ゲルト,
+        村長ヴァルター,
+        老人モーリッツ,
+        神父ジムゾン,
+        木こりトーマス,
+        旅人ニコラス,
+        ならず者ディーター,
+        少年ペーター,
+        少女リーザ,
+        行商人アルビン,
+        羊飼いカタリナ,
+        パン屋オットー,
+        青年ヨアヒム,
+        村娘パメラ,
+        農夫ヤコブ,
+        宿屋の女主人レジーナ,
+        シスターフリーデル,
+        仕立て屋エルナ,
+        司書クララ,
+        負傷兵シモン
+    }
+
     public enum Role
     {
         VILLAGER,
@@ -26,14 +50,6 @@ namespace WerewolfVillage
         {
             this.name = name;
             mentalSpace = new MentalSpace(name);
-        }
-
-        public void generateMentalAgent(List<Agent> agentList)
-        {
-            for(int i = 0; i < Form1.num_villager; i++)
-            {
-                mentalSpace.mentalList.Add(agentList[i]);
-            }
         }
 
     }

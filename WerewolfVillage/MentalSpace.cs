@@ -9,22 +9,21 @@ namespace WerewolfVillage
 {
     class MentalSpace
     {
-        string name;
+        CharaName name;
 
         public List<MentalAgent> mentalAgentList = new List<MentalAgent>();
 
 
-        public MentalSpace(string name)
+        public MentalSpace(CharaName name)
         {
             this.name = name;
-            generateMentalAgent();
             
         }
 
         /// <summary>
         /// メンタルエージェントの生成
         /// </summary>
-        void generateMentalAgent()
+        public void generateMentalAgent()
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
@@ -55,14 +54,14 @@ namespace WerewolfVillage
 
             for (int j = 0; j < Form1.num_villager; j++)
             {
-                str = str + "エージェント名:" + mentalList[j].name.ToString() + ",\r\n信頼度:"
-                    + mentalList[j].reliability.ToString() + "\r\n対応表:\r\n";
+                str = str + "エージェント名:" + mentalAgentList[j].agent.name.ToString() + ",\r\n信頼度:"
+                    + mentalAgentList[j].reliability.ToString() + "\r\n対応表:\r\n";
 
                 for (int k = 0; k < Form1.num_villager; k++)
                 {
                     for (int m = 0; m < 4; m++)
                     {
-                        str = str + mentalList[j].oppositeTable.table[k,m].ToString() + ", ";
+                        str = str + mentalAgentList[j].oppositeTable.table[k,m].ToString() + ", ";
                     }
 
                     str = str + "\r\n";

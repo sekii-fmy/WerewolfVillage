@@ -28,7 +28,12 @@ namespace WerewolfVillage
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                agentList.Add(generateAgent(i, Form1.AgentName[i], Form1.AgentRole[i]));
+                agentList.Add(generateAgent(Form1.AgentName[i], Form1.AgentRole[i]));
+            }
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                agentList[i].mentalSpace.generateMentalAgent();
             }
 
         }
@@ -38,29 +43,12 @@ namespace WerewolfVillage
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        public Agent generateAgent(int num, string name, string role)
+        public Agent generateAgent(string name, string agentRole)
         {
-            Agent agent = new Agent(name);
-         
-            //あとでvillagerの生成をいじって役職配分をランダムにする
-            //いまは占、狼、狂、村、村の順に生成
-            switch (role)
-            {
-                case 0:
-                    agent.role = Role.SEER;
-                    break;
-                case 1:
-                    agent.role = Role.WEREWOLF;
-                    break;
-                case 2:
-                    agent.role = Role.POSSESSED;
-                    break;
-                default:
-                    agent.role = Role.VILLAGER;
-                    break;
-            }
+            Agent agent = new Agent(name,agentRole);
             return agent;
         }
+
 
         public void makeOutput()
         {

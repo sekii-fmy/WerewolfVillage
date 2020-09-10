@@ -15,8 +15,8 @@ namespace WerewolfVillage
     {
         public static int num_villager = 5;
         public static string readFile = null;
-        public static string[] AgentName = null;
-        public static string[] AgentRole = null;
+        public static string[] AgentName = new string[15];
+        public static string[] AgentRole = new string[15];
         public static string printText = null;
 
         public Form1()

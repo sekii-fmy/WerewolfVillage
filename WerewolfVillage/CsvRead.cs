@@ -59,7 +59,7 @@ namespace WerewolfVillage
 
     class CsvRead
     {
-        StreamReader sr = new StreamReader(@"village_g632.csv", System.Text.Encoding.GetEncoding("shift_jis"));
+        StreamReader sr = new StreamReader(Form1.readFile, System.Text.Encoding.GetEncoding("shift_jis"));
 
         public GameData ReadNextline()
         {

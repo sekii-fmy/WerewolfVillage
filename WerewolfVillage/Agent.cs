@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace WerewolfVillage
 {
-    public enum CharactorName
+    public enum CharaName
     {
         楽天家ゲルト,
         村長ヴァルター,
@@ -34,22 +34,41 @@ namespace WerewolfVillage
     {
         VILLAGER,
         SEER,
+        PHYCHIC,
+        HUNTER,
         WEREWOLF,
         POSSESSED
     }
 
     class Agent
     {
-        public string name;
-
+        public CharaName name;
         public Role role;
 
         public MentalSpace mentalSpace;
 
-        public Agent(string name)
+        public Agent(string name, string agentRole)
         {
-            this.name = name;
-            mentalSpace = new MentalSpace(name);
+            var nameArray = Enum.GetValues(typeof(CharaName));
+            foreach (CharaName charaName in nameArray)
+            {
+                if (role.ToString() == name)
+                {
+                    this.name = charaName;
+                }
+            }
+
+            var roleArray = Enum.GetValues(typeof(Role));
+            foreach (Role role in roleArray)
+            {
+                if (role.ToString() == agentRole)
+                {
+                    this.role = role;
+                }
+            }
+
+            mentalSpace = new MentalSpace(this.name);
+
         }
 
     }

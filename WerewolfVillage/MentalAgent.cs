@@ -8,7 +8,7 @@ namespace WerewolfVillage
 {
     class MentalAgent
     {
-        Agent agent;
+        public Agent agent;
         public double reliability;           //信頼度
         public OppositeTable oppositeTable;  //対応表
 

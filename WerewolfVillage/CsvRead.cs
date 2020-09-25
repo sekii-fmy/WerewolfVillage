@@ -59,11 +59,15 @@ namespace WerewolfVillage
 
     class CsvRead
     {
-        StreamReader sr = new StreamReader(Form1.readFile, System.Text.Encoding.GetEncoding("shift_jis"));
+        public static StreamReader sr = new StreamReader(Form1.readFile, System.Text.Encoding.GetEncoding("shift_jis"));
 
-        public GameData ReadNextline()
+        public static GameData ReadNextline()
         {
             string line = sr.ReadLine();
+            if(line == null)
+            {
+                return null;
+            }
             string[] values = line.Split(',');
 
             GameData data = new GameData

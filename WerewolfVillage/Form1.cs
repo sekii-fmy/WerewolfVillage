@@ -13,11 +13,12 @@ namespace WerewolfVillage
 {
     public partial class Form1 : Form
     {
-        public static int num_villager = 5;
+        public static int num_villager = 16;
         public static string readFile = null;
-        public static string[] AgentName = new string[15];
-        public static string[] AgentRole = new string[15];
+        public static string[] AgentName = new string[num_villager];
+        public static string[] AgentRole = new string[num_villager];
         public static string printText = null;
+        Werewolf werewolf;
 
         public Form1()
         {
@@ -26,6 +27,8 @@ namespace WerewolfVillage
 
         private void startbutton_Click(object sender, EventArgs e)
         {
+            Startbutton.Visible = false;
+
             AgentName[0] = AgentName1.Text;
             AgentName[1] = AgentName2.Text;
             AgentName[2] = AgentName3.Text;
@@ -58,8 +61,15 @@ namespace WerewolfVillage
             AgentRole[13] = AgentRole14.Text;
             AgentRole[14] = AgentRole15.Text;
 
-            Werewolf werewolf = new Werewolf();
-            werewolf.startwerewolf();
+            if (GerdButton.Checked)
+            {
+                AgentName[15] = "楽天家ゲルト";
+                AgentRole[15] = "村人";
+            }
+
+            readFile = ReadFile.Text;
+            werewolf = new Werewolf();
+            werewolf.startWerewolf();
             ResultBox.Text = printText;
             File.WriteAllText(@"./LogText.txt", printText);
         }
@@ -81,6 +91,18 @@ namespace WerewolfVillage
 
         private void AgentName1_SelectedIndexChanged(object sender, EventArgs e)
         {
+        }
+
+        private void GerdButton_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void nextDayButton_Click(object sender, EventArgs e)
+        {
+            werewolf.nextDayStart();
+            ResultBox.Text = printText;
+            File.WriteAllText(@"./LogText.txt", printText);
         }
     }
 }

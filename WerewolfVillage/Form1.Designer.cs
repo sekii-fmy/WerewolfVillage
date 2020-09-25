@@ -80,11 +80,12 @@
             this.label15 = new System.Windows.Forms.Label();
             this.label16 = new System.Windows.Forms.Label();
             this.GerdButton = new System.Windows.Forms.RadioButton();
+            this.nextDayButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Startbutton
             // 
-            this.Startbutton.Location = new System.Drawing.Point(768, 267);
+            this.Startbutton.Location = new System.Drawing.Point(768, 216);
             this.Startbutton.Name = "Startbutton";
             this.Startbutton.Size = new System.Drawing.Size(167, 32);
             this.Startbutton.TabIndex = 0;
@@ -115,13 +116,13 @@
             // 
             this.numvillagecombo.FormattingEnabled = true;
             this.numvillagecombo.Items.AddRange(new object[] {
+            "16",
             "5",
             "6",
             "7",
             "8",
             "9",
-            "15",
-            "16"});
+            "15"});
             this.numvillagecombo.Location = new System.Drawing.Point(219, 49);
             this.numvillagecombo.Name = "numvillagecombo";
             this.numvillagecombo.Size = new System.Drawing.Size(121, 26);
@@ -135,12 +136,13 @@
             this.ReadFile.Name = "ReadFile";
             this.ReadFile.Size = new System.Drawing.Size(306, 25);
             this.ReadFile.TabIndex = 6;
+            this.ReadFile.Text = "village_g632.csv";
             this.ReadFile.TextChanged += new System.EventHandler(this.ReadFile_TextChanged);
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(471, 52);
+            this.label1.Location = new System.Drawing.Point(444, 52);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(152, 18);
             this.label1.TabIndex = 7;
@@ -192,6 +194,7 @@
             this.AgentName1.Name = "AgentName1";
             this.AgentName1.Size = new System.Drawing.Size(174, 26);
             this.AgentName1.TabIndex = 10;
+            this.AgentName1.Text = "少女リーザ";
             this.AgentName1.SelectedIndexChanged += new System.EventHandler(this.AgentName1_SelectedIndexChanged);
             // 
             // AgentRole1
@@ -209,7 +212,7 @@
             this.AgentRole1.Name = "AgentRole1";
             this.AgentRole1.Size = new System.Drawing.Size(99, 26);
             this.AgentRole1.TabIndex = 11;
-            this.AgentRole1.Text = "村人";
+            this.AgentRole1.Text = "狂人";
             // 
             // AgentName2
             // 
@@ -239,6 +242,7 @@
             this.AgentName2.Name = "AgentName2";
             this.AgentName2.Size = new System.Drawing.Size(174, 26);
             this.AgentName2.TabIndex = 12;
+            this.AgentName2.Text = "ならず者ディーター";
             // 
             // AgentName3
             // 
@@ -268,6 +272,7 @@
             this.AgentName3.Name = "AgentName3";
             this.AgentName3.Size = new System.Drawing.Size(174, 26);
             this.AgentName3.TabIndex = 13;
+            this.AgentName3.Text = "木こりトーマス";
             // 
             // AgentName4
             // 
@@ -297,6 +302,7 @@
             this.AgentName4.Name = "AgentName4";
             this.AgentName4.Size = new System.Drawing.Size(174, 26);
             this.AgentName4.TabIndex = 14;
+            this.AgentName4.Text = "羊飼いカタリナ";
             // 
             // AgentName5
             // 
@@ -326,6 +332,7 @@
             this.AgentName5.Name = "AgentName5";
             this.AgentName5.Size = new System.Drawing.Size(174, 26);
             this.AgentName5.TabIndex = 15;
+            this.AgentName5.Text = "少年ペーター";
             // 
             // AgentName6
             // 
@@ -355,6 +362,7 @@
             this.AgentName6.Name = "AgentName6";
             this.AgentName6.Size = new System.Drawing.Size(174, 26);
             this.AgentName6.TabIndex = 16;
+            this.AgentName6.Text = "負傷兵シモン";
             // 
             // AgentName7
             // 
@@ -384,6 +392,7 @@
             this.AgentName7.Name = "AgentName7";
             this.AgentName7.Size = new System.Drawing.Size(174, 26);
             this.AgentName7.TabIndex = 17;
+            this.AgentName7.Text = "神父ジムゾン";
             // 
             // AgentName8
             // 
@@ -413,6 +422,7 @@
             this.AgentName8.Name = "AgentName8";
             this.AgentName8.Size = new System.Drawing.Size(174, 26);
             this.AgentName8.TabIndex = 18;
+            this.AgentName8.Text = "司書クララ";
             // 
             // AgentName9
             // 
@@ -442,6 +452,7 @@
             this.AgentName9.Name = "AgentName9";
             this.AgentName9.Size = new System.Drawing.Size(174, 26);
             this.AgentName9.TabIndex = 19;
+            this.AgentName9.Text = "宿屋の女主人レジーナ";
             // 
             // AgentName10
             // 
@@ -471,6 +482,7 @@
             this.AgentName10.Name = "AgentName10";
             this.AgentName10.Size = new System.Drawing.Size(174, 26);
             this.AgentName10.TabIndex = 20;
+            this.AgentName10.Text = "青年ヨアヒム";
             // 
             // AgentName11
             // 
@@ -500,6 +512,7 @@
             this.AgentName11.Name = "AgentName11";
             this.AgentName11.Size = new System.Drawing.Size(174, 26);
             this.AgentName11.TabIndex = 21;
+            this.AgentName11.Text = "パン屋オットー";
             // 
             // AgentName12
             // 
@@ -529,6 +542,7 @@
             this.AgentName12.Name = "AgentName12";
             this.AgentName12.Size = new System.Drawing.Size(174, 26);
             this.AgentName12.TabIndex = 22;
+            this.AgentName12.Text = "行商人アルビン";
             // 
             // AgentName13
             // 
@@ -558,6 +572,7 @@
             this.AgentName13.Name = "AgentName13";
             this.AgentName13.Size = new System.Drawing.Size(174, 26);
             this.AgentName13.TabIndex = 23;
+            this.AgentName13.Text = "旅人ニコラス";
             // 
             // AgentName14
             // 
@@ -587,6 +602,7 @@
             this.AgentName14.Name = "AgentName14";
             this.AgentName14.Size = new System.Drawing.Size(174, 26);
             this.AgentName14.TabIndex = 24;
+            this.AgentName14.Text = "老人モーリッツ";
             // 
             // AgentName15
             // 
@@ -616,6 +632,8 @@
             this.AgentName15.Name = "AgentName15";
             this.AgentName15.Size = new System.Drawing.Size(174, 26);
             this.AgentName15.TabIndex = 25;
+            this.AgentName15.Text = "シスターフリーデル";
+            this.AgentName15.UseWaitCursor = true;
             // 
             // AgentRole2
             // 
@@ -683,7 +701,7 @@
             this.AgentRole5.Name = "AgentRole5";
             this.AgentRole5.Size = new System.Drawing.Size(99, 26);
             this.AgentRole5.TabIndex = 29;
-            this.AgentRole5.Text = "村人";
+            this.AgentRole5.Text = "人狼";
             // 
             // AgentRole6
             // 
@@ -717,7 +735,7 @@
             this.AgentRole7.Name = "AgentRole7";
             this.AgentRole7.Size = new System.Drawing.Size(99, 26);
             this.AgentRole7.TabIndex = 31;
-            this.AgentRole7.Text = "村人";
+            this.AgentRole7.Text = "人狼";
             // 
             // AgentRole8
             // 
@@ -768,7 +786,7 @@
             this.AgentRole10.Name = "AgentRole10";
             this.AgentRole10.Size = new System.Drawing.Size(99, 26);
             this.AgentRole10.TabIndex = 33;
-            this.AgentRole10.Text = "村人";
+            this.AgentRole10.Text = "占い師";
             // 
             // AgentRole11
             // 
@@ -785,7 +803,7 @@
             this.AgentRole11.Name = "AgentRole11";
             this.AgentRole11.Size = new System.Drawing.Size(99, 26);
             this.AgentRole11.TabIndex = 34;
-            this.AgentRole11.Text = "村人";
+            this.AgentRole11.Text = "霊能者";
             // 
             // AgentRole12
             // 
@@ -836,7 +854,7 @@
             this.AgentRole14.Name = "AgentRole14";
             this.AgentRole14.Size = new System.Drawing.Size(99, 26);
             this.AgentRole14.TabIndex = 37;
-            this.AgentRole14.Text = "村人";
+            this.AgentRole14.Text = "人狼";
             // 
             // AgentRole15
             // 
@@ -853,7 +871,7 @@
             this.AgentRole15.Name = "AgentRole15";
             this.AgentRole15.Size = new System.Drawing.Size(99, 26);
             this.AgentRole15.TabIndex = 38;
-            this.AgentRole15.Text = "村人";
+            this.AgentRole15.Text = "狩人";
             // 
             // label4
             // 
@@ -983,12 +1001,24 @@
             this.GerdButton.TabStop = true;
             this.GerdButton.Text = "楽天家ゲルト（村人）";
             this.GerdButton.UseVisualStyleBackColor = true;
+            this.GerdButton.CheckedChanged += new System.EventHandler(this.GerdButton_CheckedChanged);
+            // 
+            // nextDayButton
+            // 
+            this.nextDayButton.Location = new System.Drawing.Point(768, 273);
+            this.nextDayButton.Name = "nextDayButton";
+            this.nextDayButton.Size = new System.Drawing.Size(167, 32);
+            this.nextDayButton.TabIndex = 53;
+            this.nextDayButton.Text = "Next Day";
+            this.nextDayButton.UseVisualStyleBackColor = true;
+            this.nextDayButton.Click += new System.EventHandler(this.nextDayButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(972, 670);
+            this.Controls.Add(this.nextDayButton);
             this.Controls.Add(this.GerdButton);
             this.Controls.Add(this.label16);
             this.Controls.Add(this.label15);
@@ -1102,6 +1132,7 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.RadioButton GerdButton;
+        private System.Windows.Forms.Button nextDayButton;
     }
 }
 

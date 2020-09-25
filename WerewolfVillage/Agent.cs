@@ -6,57 +6,27 @@ using System.Threading.Tasks;
 
 namespace WerewolfVillage
 {
-    public enum CharaName
-    {
-        楽天家ゲルト,
-        村長ヴァルター,
-        老人モーリッツ,
-        神父ジムゾン,
-        木こりトーマス,
-        旅人ニコラス,
-        ならず者ディーター,
-        少年ペーター,
-        少女リーザ,
-        行商人アルビン,
-        羊飼いカタリナ,
-        パン屋オットー,
-        青年ヨアヒム,
-        村娘パメラ,
-        農夫ヤコブ,
-        宿屋の女主人レジーナ,
-        シスターフリーデル,
-        仕立て屋エルナ,
-        司書クララ,
-        負傷兵シモン
-    }
 
     public enum Role
     {
-        VILLAGER,
-        SEER,
-        PHYCHIC,
-        HUNTER,
-        WEREWOLF,
-        POSSESSED
+        村人,
+        占い師,
+        霊能者,
+        狩人,
+        狂人,
+        人狼
     }
 
     class Agent
     {
-        public CharaName name;
+        public string name;
         public Role role;
 
         public MentalSpace mentalSpace;
 
         public Agent(string name, string agentRole)
         {
-            var nameArray = Enum.GetValues(typeof(CharaName));
-            foreach (CharaName charaName in nameArray)
-            {
-                if (role.ToString() == name)
-                {
-                    this.name = charaName;
-                }
-            }
+            this.name = name;
 
             var roleArray = Enum.GetValues(typeof(Role));
             foreach (Role role in roleArray)
@@ -69,6 +39,12 @@ namespace WerewolfVillage
 
             mentalSpace = new MentalSpace(this.name);
 
+        }
+
+        public void printTest()
+        {
+            Console.Write("name is "+ name +"\r\n");
+            Console.Write("role is "+ role +"\r\n");
         }
 
     }

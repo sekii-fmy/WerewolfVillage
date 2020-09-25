@@ -8,28 +8,56 @@ namespace WerewolfVillage
 {
     class OppositeTable
     {
-        int num_role = 4;
+        int num_role = 6;
         public double[,] table;
 
         public OppositeTable()
         {
             table = new double[Form1.num_villager, num_role];
-            randomInitialTable(ref table);
+            initialTable(ref table);
         }
 
         /// <summary>
-        /// 対応表を（今は）ランダムに初期化する
+        /// 対応表を初期化する
         /// </summary>
         /// <param name="table"></param>
-        public void randomInitialTable(ref double[,] table)
+        public void initialTable(ref double[,] table)
         {
             Random random = new System.Random();
 
             for(int i = 0; i < Form1.num_villager; i++)
             {
-                table[i, random.Next(0, num_role-1)] = 1.0;
+                table[i, 0] = 0.533;
+                table[i, 1] = 0.067;
+                table[i, 2] = 0.067;
+                table[i, 3] = 0.067;
+                table[i, 4] = 0.067;
+                table[i, 5] = 0.200;
             }
         }
+
+
+
+        /// <summary>
+        /// 対応表の出力
+        /// </summary>
+        public string printOppositeTable()
+        {
+            string str = null;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                str += "｛";
+                for (int j = 0; j < num_role; j++)
+                {
+                    str += table[i, j].ToString() + ",";
+                }
+                str += "｝ \r\n";
+            }
+            return str;
+        }
+
+
+
 
         /// <summary>
         /// 推論にあたって対応表内の調査
@@ -37,9 +65,36 @@ namespace WerewolfVillage
         /// <param name="table"></param>
         public void checkTable(ref double[,] table)
         {
-            if (!numberofRole(ref table))
-            {
+            checkNumOfTable(ref table);
 
+            
+        }
+
+        /// <summary>
+        /// 対応表の値の処理
+        /// 値がマイナスになった場合は0に、
+        /// 全ての役職の値の総和が1になるように処理
+        /// </summary>
+        /// <param name="table"></param>
+        public void checkNumOfTable(ref double[,] table)
+        {
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                double total = 0;
+                for (int j = 0; j < num_role; j++)
+                {
+                    if(table[i,j] < 0)
+                    {
+                        table[i, j] = 0;
+                    }
+                    total += table[i, j];
+                }
+
+                for (int j = 0; j < num_role; j++)
+                {
+                    table[i, j] =
+                        Math.Round(table[i, j] / total, 3, MidpointRounding.AwayFromZero);
+                }
             }
         }
 
@@ -50,14 +105,6 @@ namespace WerewolfVillage
         /// <returns></returns>
         public bool numberofRole(ref double[,] table)
         {
-            for(int i = 0; i < Form1.num_villager; i++)
-            {
-                for(int j = 0; j < table.GetLength(i); j++)
-                {
-
-                }
-            }
-
             return true;
         }
 

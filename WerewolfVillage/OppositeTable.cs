@@ -14,17 +14,16 @@ namespace WerewolfVillage
         public OppositeTable()
         {
             table = new double[Form1.num_villager, num_role];
-            initialTable(ref table);
+            initialTable();
         }
 
         /// <summary>
         /// 対応表を初期化する
+        /// 初期値は役職の人数比
         /// </summary>
         /// <param name="table"></param>
-        public void initialTable(ref double[,] table)
+        public void initialTable()
         {
-            Random random = new System.Random();
-
             for(int i = 0; i < Form1.num_villager; i++)
             {
                 table[i, 0] = 0.533;
@@ -57,26 +56,13 @@ namespace WerewolfVillage
         }
 
 
-
-
-        /// <summary>
-        /// 推論にあたって対応表内の調査
-        /// </summary>
-        /// <param name="table"></param>
-        public void checkTable(ref double[,] table)
-        {
-            checkNumOfTable(ref table);
-
-            
-        }
-
         /// <summary>
         /// 対応表の値の処理
         /// 値がマイナスになった場合は0に、
         /// 全ての役職の値の総和が1になるように処理
         /// </summary>
         /// <param name="table"></param>
-        public void checkNumOfTable(ref double[,] table)
+        public void checkNumberOfTable()
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
@@ -97,16 +83,5 @@ namespace WerewolfVillage
                 }
             }
         }
-
-        /// <summary>
-        /// 役職を名乗る人数が役職人数以下でなければならない
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public bool numberofRole(ref double[,] table)
-        {
-            return true;
-        }
-
     }
 }

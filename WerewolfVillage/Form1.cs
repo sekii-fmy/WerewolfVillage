@@ -18,6 +18,7 @@ namespace WerewolfVillage
         public static string[] AgentName = new string[num_villager];
         public static string[] AgentRole = new string[num_villager];
         public static string printText = null;
+        public static string writeText = null;
         Werewolf werewolf;
 
         public Form1()
@@ -70,7 +71,7 @@ namespace WerewolfVillage
             readFile = ReadFile.Text;
             werewolf = new Werewolf();
             werewolf.startWerewolf();
-            ResultBox.Text = printText;
+            ResultBox.Text = writeText + "but not Vote today. \r\n";
             File.WriteAllText(@"./LogText.txt", printText);
         }
 
@@ -100,8 +101,9 @@ namespace WerewolfVillage
 
         private void nextDayButton_Click(object sender, EventArgs e)
         {
+            writeText += "\r\n \r\n";
             werewolf.nextDayStart();
-            ResultBox.Text = printText;
+            ResultBox.Text = writeText;
             File.WriteAllText(@"./LogText.txt", printText);
         }
     }

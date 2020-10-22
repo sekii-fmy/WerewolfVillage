@@ -9,24 +9,26 @@ namespace WerewolfVillage
 
     public enum Role
     {
-        村人,
-        占い師,
-        霊能者,
-        狩人,
-        狂人,
-        人狼
+        村人,         //VILLAGER
+        占い師,       //SEER
+        霊能者,       //MEDIUM
+        狩人,         //BODYGUARD
+        狂人,         //POSSESSED
+        人狼,          //WEREWOLF
     }
 
     class Agent
     {
         public string name;
         public Role role;
+        public bool alive;
 
         public MentalSpace mentalSpace;
 
         public Agent(string name, string agentRole)
         {
             this.name = name;
+            alive = true;
 
             var roleArray = Enum.GetValues(typeof(Role));
             foreach (Role role in roleArray)
@@ -39,6 +41,36 @@ namespace WerewolfVillage
 
             mentalSpace = new MentalSpace(this.name);
 
+        }
+
+        public string getFortune()
+        {
+            return mentalSpace.decideFortune();
+        }
+
+        public string getBodyGuard()
+        {
+            return mentalSpace.decideBodyGuard();
+        }
+
+        public string getRaid()
+        {
+            return mentalSpace.decideRaid();
+        }
+
+        public GameData getUtterance(GameData gameData)
+        {
+            return mentalSpace.makeUtterance(gameData);
+        }
+
+        public GameData getWhisper(GameData gameData)
+        {
+            return mentalSpace.makeWhisper(gameData);
+        }
+
+        public string getVote()
+        {
+            return mentalSpace.decideVote();
         }
 
         public void printTest()

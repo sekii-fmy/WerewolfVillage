@@ -12,8 +12,10 @@ namespace WerewolfVillage
         public bool alive;            //生死    
         public double reliability;           //信頼度
         public OppositeTable oppositeTable;  //対応表
-        public double vote;                  //投票意思,高いプレイヤに投票しようとする
+        public double vote;                  //投票意思,高いプレイヤに投票する
         public double fortune;               //占い意思,高いプレイヤを占う
+        public double bodyguard;             //護衛意思,高いプレイヤを護る
+        public double raid;                  //襲撃意思,高いプレイヤを襲撃する
         public bool[] coRole;
         public bool[] notCoRole;
 
@@ -24,6 +26,8 @@ namespace WerewolfVillage
             reliability = 0.5;
             vote = 0;
             fortune = 0;
+            bodyguard = 0;
+            raid = 0;
             coRole = new bool[6] {false, false, false, false, false, false };
             notCoRole = new bool[6] { false, false, false, false, false, false };
             oppositeTable = new OppositeTable();
@@ -36,6 +40,8 @@ namespace WerewolfVillage
         {
             vote = 0;
             fortune = 0;
+            bodyguard = 0;
+            //raid = 0;
         }
         
         /// <summary>

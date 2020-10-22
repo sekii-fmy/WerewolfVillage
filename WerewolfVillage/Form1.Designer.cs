@@ -81,11 +81,12 @@
             this.label16 = new System.Windows.Forms.Label();
             this.GerdButton = new System.Windows.Forms.RadioButton();
             this.nextDayButton = new System.Windows.Forms.Button();
+            this.StartAutoGame = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // Startbutton
             // 
-            this.Startbutton.Location = new System.Drawing.Point(768, 216);
+            this.Startbutton.Location = new System.Drawing.Point(768, 92);
             this.Startbutton.Name = "Startbutton";
             this.Startbutton.Size = new System.Drawing.Size(167, 32);
             this.Startbutton.TabIndex = 0;
@@ -993,19 +994,17 @@
             // GerdButton
             // 
             this.GerdButton.AutoSize = true;
-            this.GerdButton.Checked = true;
             this.GerdButton.Location = new System.Drawing.Point(140, 617);
             this.GerdButton.Name = "GerdButton";
             this.GerdButton.Size = new System.Drawing.Size(184, 22);
             this.GerdButton.TabIndex = 52;
-            this.GerdButton.TabStop = true;
             this.GerdButton.Text = "楽天家ゲルト（村人）";
             this.GerdButton.UseVisualStyleBackColor = true;
             this.GerdButton.CheckedChanged += new System.EventHandler(this.GerdButton_CheckedChanged);
             // 
             // nextDayButton
             // 
-            this.nextDayButton.Location = new System.Drawing.Point(768, 273);
+            this.nextDayButton.Location = new System.Drawing.Point(768, 130);
             this.nextDayButton.Name = "nextDayButton";
             this.nextDayButton.Size = new System.Drawing.Size(167, 32);
             this.nextDayButton.TabIndex = 53;
@@ -1013,11 +1012,22 @@
             this.nextDayButton.UseVisualStyleBackColor = true;
             this.nextDayButton.Click += new System.EventHandler(this.nextDayButton_Click);
             // 
+            // StartAutoGame
+            // 
+            this.StartAutoGame.Location = new System.Drawing.Point(768, 284);
+            this.StartAutoGame.Name = "StartAutoGame";
+            this.StartAutoGame.Size = new System.Drawing.Size(167, 32);
+            this.StartAutoGame.TabIndex = 54;
+            this.StartAutoGame.Text = "StartAutoGame";
+            this.StartAutoGame.UseVisualStyleBackColor = true;
+            this.StartAutoGame.Click += new System.EventHandler(this.StartAutoGame_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(972, 670);
+            this.Controls.Add(this.StartAutoGame);
             this.Controls.Add(this.nextDayButton);
             this.Controls.Add(this.GerdButton);
             this.Controls.Add(this.label16);
@@ -1133,6 +1143,7 @@
         private System.Windows.Forms.Label label16;
         private System.Windows.Forms.RadioButton GerdButton;
         private System.Windows.Forms.Button nextDayButton;
+        private System.Windows.Forms.Button StartAutoGame;
     }
 }
 

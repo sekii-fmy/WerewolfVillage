@@ -32,7 +32,7 @@ namespace WerewolfVillage
             gameData = village.startInference();
 
             //出力開始
-            village.makeOutput();
+            //village.makeOutput();
             Console.Write("end to output \r\n \r\n");
         }
 
@@ -46,6 +46,11 @@ namespace WerewolfVillage
             //出力開始
             village.makeOutput();
             Console.Write("end to output \r\n \r\n");
+        }
+
+        public void startAutoGame()
+        {
+            village.startGame();
         }
 
     }

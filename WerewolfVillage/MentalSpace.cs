@@ -10,6 +10,19 @@ namespace WerewolfVillage
     class MentalSpace
     {
         string name;
+        Role myRole = Role.村人;
+        bool isCO = false;
+        bool isSendResultOfFortune = false;
+        bool isSendResultOfPsychic = false;
+        bool isSendDisire = false;
+        bool isSendEstimate = false;
+        bool iswolfCO = false;
+        bool isDisireCO = false;
+        bool isDisireRaid = false;
+        string[] wolfPlayer = new string[3];
+        string[] disireCO = new string[3];
+        string[] disireRaid = new string[3];
+
         int[] num_roleCO = new int[6] { 0, 0, 0, 0, 0, 0 };
 
         public class Result_fortune
@@ -27,14 +40,16 @@ namespace WerewolfVillage
         }
 
         List<MentalAgent> mentalAgentList = new List<MentalAgent>();     //メンタルエージェントリスト
-        List<Result_fortune> fortuneList = new List<Result_fortune>();          //占い結果
-        List<Result_psychic> psychicList = new List<Result_psychic>();          //霊能結果
+        List<Result_fortune> fortuneList = new List<Result_fortune>();          //占い結果発言リスト
+        List<Result_psychic> psychicList = new List<Result_psychic>();          //霊能結果発言リスト
         List<GameData> gameDataList = new List<GameData>();              //発話リスト
+        List<GameData> fortuneGameDataList = new List<GameData>();
+        List<GameData> psychicGameDataList = new List<GameData>();
 
 
         public MentalSpace(string name)
         {
-            this.name = name;            
+            this.name = name;
         }
 
         /// <summary>
@@ -47,6 +62,16 @@ namespace WerewolfVillage
                 MentalAgent mentalAgent = new MentalAgent(ref Village.agentList, i);
                 mentalAgentList.Add(mentalAgent);
             }
+        }
+
+        public void dayStart()
+        {
+            isSendResultOfFortune = false;
+            isSendResultOfPsychic = false;
+            isSendDisire = false;
+            isSendEstimate = false;
+            isDisireRaid = false;
+            isDisireCO = false;
         }
 
         /// <summary>
@@ -90,6 +115,29 @@ namespace WerewolfVillage
                     mentalAgentList[i].checkReliability();
                 }
             }
+            else if(gameData.Public == "赤")
+            {
+                string[] values = gameData.Tag.Split(' ');
+                foreach(string value in values)
+                {
+                    switch (value)
+                    {
+                        case "人狼CO":
+                            wolfPartnerCO(gameData);
+                            break;
+                        case "CO希望":
+                            wolf_DisireOfCO(gameData);
+                            break;
+                        case "襲撃希望":
+                            wolf_DisireOfRaid(gameData);
+                            break;
+                    }
+                }
+            }
+
+            //printVote();
+            dataRead();
+
         }
 
         /// <summary>
@@ -98,14 +146,13 @@ namespace WerewolfVillage
         public void dataRead()
         {
             string day = "プロローグ";
+
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 mentalAgentList[i].dayStart();
             }
-            int k = 0;
-            Console.Write(name + "\r\n");
 
-            foreach(GameData data in gameDataList)
+            foreach (GameData data in gameDataList)
             {
                 if (data.Day != day)
                 {
@@ -117,6 +164,7 @@ namespace WerewolfVillage
                 }
                 inference(data);
             }
+            decideOfVote();
         }
 
 
@@ -127,12 +175,6 @@ namespace WerewolfVillage
         /// </summary>
         public void inference(GameData gameData)
         {
-            for (int i = 0; i < Form1.num_villager; i++)
-            {
-                mentalAgentList[i].dayStart();
-            }
-
-
             if (gameData.Public == "白")
             {
                 string[] values = gameData.Tag.Split(' ');
@@ -193,10 +235,13 @@ namespace WerewolfVillage
                     switch (tag)
                     {
                         case "占い":
-                            fortune(gameData);
+                            gameDataFortune(gameData);
+                            break;
+                        case "霊能":
+                            gameDataPsychic(gameData);
                             break;
                         case "狩人":
-                            hunter(gameData);
+                            gameDataBodyGuard(gameData);
                             break;
                         case "投票":
                             inferenceVote(gameData);
@@ -216,7 +261,6 @@ namespace WerewolfVillage
             }
 
             checkMyRole();
-            decideOfVote();
 
         }
 
@@ -285,7 +329,7 @@ namespace WerewolfVillage
                         }
 
                     }
-                    else //guess[0].length!=1
+                    else if(guess[0].Length > 1)//guess[0].length!=1
                     {
                         string[] roles = guess[1].Split('-');
                         for(int i =0; i < guess[0].Length; i++)
@@ -815,9 +859,16 @@ namespace WerewolfVillage
         /// </summary>
         /// <param name="gameData"></param>
         public void resultOfRaid(GameData gameData)
-        {            
-            mentalAgentList[getAgentNum(gameData.Guess)].alive = false;
-            seerReliability(gameData.Guess);
+        {
+            if(gameData.Guess == "失敗")
+            {
+                return;
+            }
+            else
+            {
+                mentalAgentList[getAgentNum(gameData.Guess)].alive = false;
+                seerReliability(gameData.Guess);
+            }
         }
 
 
@@ -828,9 +879,16 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void inferenceRaid(GameData gameData)
         {
-            for (int i = 0; i < Form1.num_villager; i++)
+            if(gameData.Guess == "失敗")
             {
-                mentalAgentList[i].oppositeTable.table[getAgentNum(gameData.Guess), 5] = 0;
+                return;
+            }
+            else
+            {
+                for (int i = 0; i < Form1.num_villager; i++)
+                {
+                    mentalAgentList[i].oppositeTable.table[getAgentNum(gameData.Guess), 5] = 0;
+                }
             }
         }
 
@@ -1113,8 +1171,13 @@ namespace WerewolfVillage
         /// 占った人が人間なら人狼値0
         /// </summary>
         /// <param name="gameData"></param>
-        public void fortune(GameData gameData)
+        public void gameDataFortune(GameData gameData)
         {
+            if (!fortuneGameDataList.Contains(gameData))
+            {
+                fortuneGameDataList.Add(gameData);
+            }
+
             string[] values = gameData.Guess.Split(':');
             switch (values[2])
             {
@@ -1135,11 +1198,43 @@ namespace WerewolfVillage
         }
 
         /// <summary>
+        /// 霊能
+        /// 霊能者の対応表において、霊能先が人狼なら人狼値1、他は0
+        /// 霊能先が人間なら人狼値0
+        /// </summary>
+        /// <param name="gameData"></param>
+        public void gameDataPsychic(GameData gameData)
+        {
+            if (!psychicGameDataList.Contains(gameData))
+            {
+                psychicGameDataList.Add(gameData);
+            }
+
+            string[] values = gameData.Guess.Split(':');
+            switch (values[2])
+            {
+                case "人間":
+                    getAgent(Abbreviation(values[0])).oppositeTable.table[getAgentNum(Abbreviation(values[1])), 5] = 0;
+                    break;
+                case "人狼":
+                    getAgent(Abbreviation(values[0])).oppositeTable.table[getAgentNum(Abbreviation(values[1])), 5] = 1;
+                    for (int i = 0; i < 5; i++)
+                    {
+                        getAgent(Abbreviation(values[0])).oppositeTable.table[getAgentNum(Abbreviation(values[1])), i] = 0;
+                    }
+                    break;
+                default:
+                    break;
+
+            }
+        }
+
+        /// <summary>
         /// 狩人
         /// 今のところ特に処理は無し？
         /// </summary>
         /// <param name="gameData"></param>
-        public void hunter(GameData gameData)
+        public void gameDataBodyGuard(GameData gameData)
         {
 
         }
@@ -1162,7 +1257,76 @@ namespace WerewolfVillage
 
         }
 
+        /// <summary>
+        /// 人狼CO
+        /// 人狼同士の確認
+        /// 仲間の人狼のプレイヤー名を配列に加える
+        /// </summary>
+        /// <param name="gameData"></param>
+        public void wolfPartnerCO(GameData gameData)
+        {
+            int i = 0;
+            string[] values = gameData.Guess.Split(' ');
+            foreach (string value in values)
+            {
+                string[] partnerCO = value.Split(':');
+                if(value.Contains("人狼CO"))
+                {
+                    while (wolfPlayer[i] != null)
+                    {
+                        i++;
+                    }
+                    wolfPlayer[i] = Abbreviation(partnerCO[0]);
+                }
+            }
+        }
 
+        /// <summary>
+        /// CO希望
+        /// </summary>
+        /// <param name="gameData"></param>
+        public void wolf_DisireOfCO(GameData gameData)
+        {
+            isDisireCO = true;
+            string[] values = gameData.Guess.Split(' ');
+            foreach(string value in values)
+            {
+                string[] vs = value.Split(':');
+                for(int i = 0; i < wolfPlayer.Length; i++)
+                {
+                    if (gameData.Name == wolfPlayer[i])
+                    {
+                        disireCO[i] = gameData.Guess;
+                    }
+                }
+                if (Abbreviation(vs[0]) == name)
+                {
+                    myRole = stringToRole(vs[1]);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 襲撃希望
+        /// </summary>
+        /// <param name="gameData"></param>
+        public void wolf_DisireOfRaid(GameData gameData)
+        {
+            string[] values = gameData.Guess.Split(' ');
+            foreach (string value in values)
+            {
+                string[] vs = value.Split(':');
+                getAgent(Abbreviation(vs[1])).raid = 1;
+                for (int i = 0; i < wolfPlayer.Length; i++)
+                {
+                    if (Abbreviation(gameData.Name) == wolfPlayer[i])
+                    {
+                        disireCO[i] = gameData.Guess;
+                    }
+                }
+                isDisireRaid = true;
+            }
+        }
 
 
 
@@ -1429,6 +1593,41 @@ namespace WerewolfVillage
             }
         }
 
+        /// <summary>
+        /// パワープレイできる状況で人狼、狂人のCOがないとき、人狼か狂人が最低一人死んでいる
+        /// 死んでいる人の中で、人狼値（狂人値）が0でない人の人狼値（狂人値）を少し上げる
+        /// </summary>
+        public void checkPP()
+        {
+            int living = 0;
+            int cowolf = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if (mentalAgentList[i].alive)
+                {
+                    living++;
+                    if (mentalAgentList[i].coRole[4] || mentalAgentList[i].coRole[5])
+                    {
+                        cowolf++;
+                    }
+                }
+            }
+            if (living <= 8 && cowolf == 0)
+            {
+                for (int i = 0; i < Form1.num_villager; i++)
+                {
+                    if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 4] != 0)
+                    {
+                        getAgent(name).oppositeTable.table[i, 4] += 0.1;
+                    }
+                    if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 5] != 0)
+                    {
+                        getAgent(name).oppositeTable.table[i, 5] += 0.1;
+                    }
+                }
+            }
+        }
+
 
         /// <summary>
         /// 人狼値（狂人値）の高いプレイヤの信頼度を下げる
@@ -1449,41 +1648,610 @@ namespace WerewolfVillage
             }
         }
 
-
         /// <summary>
-        /// パワープレイできる状況で人狼、狂人のCOがないとき、人狼か狂人が最低一人死んでいる
-        /// 死んでいる人の中で、人狼値（狂人値）が0でない人の人狼値（狂人値）を少し上げる
+        /// 占い意思
+        /// 自分自身、およびすでに占った人は占わない
         /// </summary>
-        public void checkPP()
+        public void fortunedAgentfortune()
         {
-            int living = 0;
-            int cowolf = 0;
             for(int i = 0; i < Form1.num_villager; i++)
             {
-                if (mentalAgentList[i].alive)
+                if(mentalAgentList[i].agent.name == name)
                 {
-                    living++;
-                    if (mentalAgentList[i].coRole[4] || mentalAgentList[i].coRole[5])
-                    {
-                        cowolf++;
-                    }
-                } 
-            }
-            if(living <= 8 && cowolf == 0)
-            {
-                for(int i = 0; i<Form1.num_villager; i++)
+                    mentalAgentList[i].fortune = 0;
+                }
+                else if (isFortuned(mentalAgentList[i].agent.name))
                 {
-                    if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 4] != 0)
-                    {
-                        getAgent(name).oppositeTable.table[i, 4] += 0.1;
-                    }
-                    if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 5] != 0)
-                    {
-                        getAgent(name).oppositeTable.table[i, 5] += 0.1;
-                    }
+                    mentalAgentList[i].fortune = 0;
                 }
             }
         }
+
+        /// <summary>
+        /// 襲撃意思
+        /// 既に役職COしているプレイヤを優先する
+        /// 人狼値が最も低い（最も白めに見られている）プレイヤを襲う
+        /// </summary>
+        public void intention_Raid()
+        {
+            int min = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if ((mentalAgentList[i].coRole[1] || mentalAgentList[i].coRole[2])
+                    && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
+                    && mentalAgentList[i].alive)
+                {
+                    mentalAgentList[i].raid += 0.5;
+                }
+            }
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if ((getAgent(name).oppositeTable.table[i, 4] + getAgent(name).oppositeTable.table[i, 5]
+                    < getAgent(name).oppositeTable.table[min, 4] + getAgent(name).oppositeTable.table[min, 5])
+                    && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
+                    && mentalAgentList[i].alive)
+                {
+                    min = i;
+                }
+            }
+            mentalAgentList[min].raid += 0.3;
+        }
+
+
+        /// <summary>
+        /// ささやきを生成する
+        /// （初日の夜は）誰がCOするかを相談する
+        /// それ以降は、襲撃したい相手に対する襲撃希望
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
+        public GameData makeWhisper(GameData gameData)
+        {
+            if (gameData.Day == "プロローグ")
+            {
+                if (!iswolfCO)
+                {
+                    iswolfCO = true;
+                    gameData.Tag = "人狼CO";
+                    gameData.Guess = Complement(name) + ":人狼CO ";
+                }
+                else if (!isDisireCO)
+                {
+                    gameData.Tag = "CO希望";
+                    int seed = Environment.TickCount;
+                    Random rnd = new Random(seed++);
+                    int rndvalue = rnd.Next(0, 1000);
+                    if (rndvalue < 600)
+                    {
+                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0,2)]) + ":霊能者 ";
+                    }
+                    else if (rndvalue < 900)
+                    {
+                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0, 2)]) + ":占い師 ";
+                    }
+                    else
+                    {
+                        gameData.Guess += Complement(wolfPlayer[0]) + ":村人 "
+                                        + Complement(wolfPlayer[1]) + ":村人 "
+                                        + Complement(wolfPlayer[2]) + ":村人 ";
+                    }
+
+                    isDisireCO = true;
+
+                }
+                else
+                {
+                    gameData.Tag = "Over";
+                }
+                return gameData;
+            }
+            else
+            {
+                if (!isDisireRaid)
+                {
+                    isDisireRaid = true;
+                    gameData.Tag += "襲撃希望 ";
+                    for (int i = 0; i < Form1.num_villager; i++)
+                    {
+                        if((mentalAgentList[i].coRole[1] || mentalAgentList[i].coRole[2]) 
+                            && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
+                            && mentalAgentList[i].alive)
+                        {
+                            gameData.Guess = "襲撃意思:" + Complement(mentalAgentList[i].agent.name);
+                            return gameData;
+                        }
+                    }
+                    int min = 0;
+                    for (int i = 0; i < Form1.num_villager; i++)
+                    {
+                        if((mentalAgentList[min].raid < mentalAgentList[i].raid)
+                            && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
+                            && mentalAgentList[i].alive)
+                        {
+                            min = i;
+                        }
+                    }
+                    gameData.Guess = "襲撃意思:" + Complement(mentalAgentList[min].agent.name);
+                    return gameData;
+                }
+                else
+                {
+                    gameData.Tag = "Over";
+                }
+                return gameData;
+            }
+        }
+
+        /// <summary>
+        /// 発言を生成する
+        /// COしていなかったらCO
+        /// 占い結果、霊能結果の報告
+        /// 吊りたい相手に対する吊り希望        
+        /// 人狼だと思っているプレイヤと、人狼ではないと思っているプレイヤへの考察発言
+        /// </summary>
+        public GameData makeUtterance(GameData gameData)
+        {
+            if (!isCO && gameData.Day == "1日目")
+            {
+                isCO = true;
+                return utteranceCO(gameData);
+            }
+            else if ((!isSendResultOfFortune) && (getAgent(name).agent.role == Role.占い師)
+                        && fortuneGameDataList.Count != 0)
+            {
+                isSendResultOfFortune = true;
+                return utteranceResultOfFortune(gameData);
+            }
+            else if ((!isSendResultOfPsychic) && (getAgent(name).agent.role == Role.霊能者)
+                        && psychicGameDataList.Count != 0)
+            {
+                isSendResultOfPsychic = true;
+                return utteranceResultOfPsychic(gameData);
+            }
+            else if (!isSendDisire)
+            {
+                isSendDisire = true;
+                return utteranceDisire(gameData);
+            }
+            else if (!isSendEstimate)
+            {
+                isSendEstimate = true;
+                return utteranceEstimate(gameData);
+            }
+            else
+            {
+                return utteranceOver(gameData);
+            }
+        }
+
+        /// <summary>
+        /// COする
+        /// 1日目に、占い師、霊能者は自分の役職をCO
+        /// 他の役職の場合、非占、非霊CO
+        /// </summary>
+        public GameData utteranceCO(GameData gameData)
+        {
+            if(gameData.Day == "1日目")
+            {
+                switch (getAgent(name).agent.role)
+                {
+                    case Role.占い師:
+                        gameData.Name = name;
+                        gameData.Public = "白";
+                        gameData.Tag += "CO ";
+                        gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非霊能者CO ";
+                        return gameData;
+                    case Role.霊能者:
+                        gameData.Name = name;
+                        gameData.Public = "白";
+                        gameData.Tag += "CO ";
+                        gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+                        return gameData;
+                    case Role.狂人:
+                        return possessedCO(gameData);
+                    case Role.人狼:
+                        return wolfCO(gameData);
+                    default:
+                        gameData.Name = name;
+                        gameData.Public = "白";
+                        gameData.Tag += "CO ";
+                        gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+                        return gameData;
+                }
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// 狂人の騙りCO
+        /// {占い師、霊能者、COしない｝からランダムに選択する
+        /// </summary>
+        /// <param name="gameData"></param>
+        public GameData possessedCO(GameData gameData)
+        {
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            int rndvalue = rnd.Next(0, 1000);
+            if (rndvalue < 600)
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非霊能者CO ";
+            }
+            else if(rndvalue < 900)
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+            }
+            else
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+            }
+            return gameData;
+        }
+
+        /// <summary>
+        /// 人狼の騙りCO
+        /// </summary>
+        /// <returns></returns>
+        public GameData wolfCO(GameData gameData)
+        {
+            if(myRole　== Role.占い師)
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+            }
+            else if(myRole == Role.霊能者)
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+            }
+            else
+            {
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "CO ";
+                gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+            }
+            return gameData;
+        }
+
+        /// <summary>
+        /// 占い結果の発言
+        /// </summary>
+        public GameData utteranceResultOfFortune(GameData gameData)
+        {
+            gameData.Name = name;
+            gameData.Public = "白";
+            gameData.Tag += "占い結果 ";
+            gameData.Guess = fortuneGameDataList[fortuneGameDataList.Count - 1].Guess.Substring(2);
+            return gameData;
+        }
+
+        /// <summary>
+        /// 霊能結果の発言
+        /// </summary>
+        public GameData utteranceResultOfPsychic(GameData gameData)
+        {
+            gameData.Name = name;
+            gameData.Public = "白";
+            gameData.Tag += "霊能結果 ";
+            gameData.Guess = psychicGameDataList[psychicGameDataList.Count - 1].Guess.Substring(2);
+            return gameData;
+        }
+
+        /// <summary>
+        /// 希望の発言
+        /// 人狼と最も怪しんでいるプレイヤーに対する吊り希望
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
+        public GameData utteranceDisire(GameData gameData)
+        {
+            if(getAgent(name).agent.role != Role.人狼)
+            {
+                int max = 0;
+                for (int i = 0; i< Form1.num_villager; i++)
+                {
+                    if(getAgent(name).oppositeTable.table[i, 5] > getAgent(name).oppositeTable.table[max, 5])
+                    {
+                        max = i;
+                    }
+                }
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "希望 ";
+                gameData.Disire += "吊り希望:" + Complement(mentalAgentList[max].agent.name);
+            }
+            else
+            {
+                int max = 0;
+                while (wolfPlayer.Contains(mentalAgentList[max].agent.name))
+                {
+                    max++;
+
+                }
+                for (int i = 0; i < Form1.num_villager; i++)
+                {
+                    if (getAgent(name).oppositeTable.table[i, 5] > getAgent(name).oppositeTable.table[max, 5] 
+                        && !wolfPlayer.Contains(mentalAgentList[i].agent.name))
+                    {
+                        max = i;
+                    }
+                }
+                gameData.Name = name;
+                gameData.Public = "白";
+                gameData.Tag += "希望 ";
+                gameData.Disire += "吊り希望:" + Complement(mentalAgentList[max].agent.name);
+            }            
+            return gameData;
+        }
+
+        /// <summary>
+        /// 考察の発言
+        /// </summary>
+        public GameData utteranceEstimate(GameData gameData)
+        {
+
+            gameData.Name = name;
+            gameData.Public = "白";
+            gameData.Tag += "考察 ";
+                
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if(getAgent(name).oppositeTable.table[i, 0] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 0] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人寄り ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 1] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 1] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師寄り ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 2] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 2] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者寄り ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 3] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 3] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人寄り ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 4] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 4] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人寄り ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 5] > 0.8)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼 ";
+                }
+                else if (getAgent(name).oppositeTable.table[i, 5] > 0.5)
+                {
+                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼寄り ";
+                }
+            }
+            return gameData;
+        }
+
+        /// <summary>
+        /// Over
+        /// その日にこれ以上話すことがないとき、Overを返す
+        /// </summary>
+        /// <param name=""></param>
+        /// <returns></returns>
+        public GameData utteranceOver(GameData gameData)
+        {
+            gameData.Name = name;
+            gameData.Public = "白";
+            gameData.Tag = "Over";
+
+            return gameData;
+        }
+
+        /// <summary>
+        /// 投票先を決めて、エージェント名を返す
+        /// </summary>
+        /// <returns></returns>
+        public string decideVote()
+        {
+            int num_max = 0;
+            while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
+            List<string> voteTarget = new List<string>();
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                //　投票意思値が高く、自分でも人狼の仲間でもない相手
+                if ((mentalAgentList[i].vote > mentalAgentList[num_max].vote) && (mentalAgentList[i].alive)
+                    && (i != getAgentNum(name)) && (!wolfPlayer.Contains(mentalAgentList[i].agent.name)) )
+                {
+                    num_max = i;
+                }
+            }
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if ((mentalAgentList[i].vote == mentalAgentList[num_max].vote) && (mentalAgentList[i].alive)
+                    && (i != getAgentNum(name)) && (!wolfPlayer.Contains(mentalAgentList[i].agent.name)))
+                {
+                    voteTarget.Add(mentalAgentList[i].agent.name);
+                }
+            }
+
+            if (voteTarget.Count == 0)
+            {
+                return mentalAgentList[rnd.Next(0,Form1.num_villager)].agent.name;
+            }
+
+            return voteTarget[rnd.Next(0, voteTarget.Count - 1)];
+
+        }
+
+        /// <summary>
+        /// 占い先を決めて、エージェント名を返す
+        /// </summary>
+        /// <returns></returns>
+        public string decideFortune()
+        {
+            int num_max = 0;
+            while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
+            List<string> fortuneTarget = new List<string>();
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if( (mentalAgentList[i].fortune > mentalAgentList[num_max].fortune)
+                        && (i != getAgentNum(name)) && mentalAgentList[i].alive 
+                        && !isFortuned(mentalAgentList[i].agent.name))
+                {
+                    num_max = i;
+                }
+            }
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if((mentalAgentList[i].fortune == mentalAgentList[num_max].fortune) 
+                        && (i != getAgentNum(name)) && mentalAgentList[i].alive 
+                        && !isFortuned(mentalAgentList[i].agent.name))
+                {
+                    fortuneTarget.Add(mentalAgentList[i].agent.name);
+                }
+            }
+
+            if (fortuneTarget.Count == 0)
+            {
+                return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
+            }
+
+            return fortuneTarget[rnd.Next(0, fortuneTarget.Count - 1)];
+
+        }
+
+        /// <summary>
+        /// 既に占ったエージェントか確認する
+        /// </summary>
+        /// <param name="name_Agent"></param>
+        /// <returns></returns>
+        public bool isFortuned(string name_Agent)
+        {
+            for(int i = 0; i < fortuneGameDataList.Count; i++)
+            {
+                string[] values = fortuneGameDataList[i].Guess.Split(':');
+                if (name_Agent == Abbreviation(values[1]))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// 護衛先を決めて、エージェント名を返す
+        /// </summary>
+        /// <returns></returns>
+        public string decideBodyGuard()
+        {
+            int num_max = 0;
+            while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
+            List<string> bodyguardTarget = new List<string>();
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if ((mentalAgentList[i].bodyguard > mentalAgentList[num_max].bodyguard)
+                    && (i != getAgentNum(name)) && mentalAgentList[i].alive)
+                {
+                    num_max = i;
+                }
+            }
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if ((mentalAgentList[i].bodyguard == mentalAgentList[num_max].bodyguard)
+                    && (i != getAgentNum(name)) && mentalAgentList[i].alive)
+                {
+                    bodyguardTarget.Add(mentalAgentList[i].agent.name);
+                }
+            }
+
+            if (bodyguardTarget.Count == 0)
+            {
+                return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
+            }
+
+            return bodyguardTarget[rnd.Next(0, bodyguardTarget.Count - 1)];
+        }
+
+        /// <summary>
+        /// 襲撃先を決めて、エージェント名を返す
+        /// </summary>
+        /// <returns></returns>
+        public string decideRaid()
+        {
+            int num_max = 0;
+            while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
+            List<string> raidTarget = new List<string>();
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if (mentalAgentList[i].raid > mentalAgentList[num_max].raid && mentalAgentList[i].alive
+                    && (i != getAgentNum(name)) && (!wolfPlayer.Contains(mentalAgentList[i].agent.name)) )
+                {
+                    num_max = i;
+                }
+            }
+
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if (mentalAgentList[i].raid == mentalAgentList[num_max].raid && mentalAgentList[i].alive
+                    && (i != getAgentNum(name)) && (!wolfPlayer.Contains(mentalAgentList[i].agent.name)))
+                {
+                    raidTarget.Add(mentalAgentList[i].agent.name);
+                }
+            }
+
+            if (raidTarget.Count == 0)
+            {
+                return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
+            }
+
+            return raidTarget[rnd.Next(0, raidTarget.Count - 1)];
+
+
+        } 
 
 
         /// <summary>
@@ -1560,6 +2328,76 @@ namespace WerewolfVillage
             return charaname;
         }
 
+        public string Complement(string comp)
+        {
+            switch (comp)
+            {
+                case "楽天家ゲルト":
+                    return "楽";
+                case "村長ヴァルター":
+                    return "長";
+                case "老人モーリッツ":
+                    return "老";
+                case "神父ジムゾン":
+                    return "神";
+                case "木こりトーマス":
+                    return "樵";
+                case "旅人ニコラス":
+                    return "旅";
+                case "ならず者ディーター":
+                    return "者";
+                case "少年ペーター":
+                    return "年";
+                case "少女リーザ":
+                    return "妙";
+                case "行商人アルビン":
+                    return "商";
+                case "羊飼いカタリナ":
+                    return "羊";
+                case "パン屋オットー":
+                    return "屋";
+                case "青年ヨアヒム":
+                    return "青";
+                case "村娘パメラ":
+                    return "娘";
+                case "農夫ヤコブ":
+                    return "農";
+                case "宿屋の女主人レジーナ":
+                    return "宿";
+                case "シスターフリーデル":
+                    return "修";
+                case "仕立て屋エルナ":
+                    return "仕";
+                case "司書クララ":
+                    return "書";
+                case "負傷兵シモン":
+                    return "兵";
+                default:
+                    return null;
+            }
+        }
+
+        public Role stringToRole(string roleName)
+        {
+            switch (roleName)
+            {
+                case "村人":
+                    return Role.村人;
+                case "占い師":
+                    return Role.占い師;
+                case "霊能者":
+                    return Role.霊能者;
+                case "狩人":
+                    return Role.狩人;
+                case "狂人":
+                    return Role.狂人;
+                case "人狼":
+                    return Role.人狼;
+                default:
+                    return Role.村人;
+            }
+        }
+
 
         /// <summary>
         /// キャラネームと同じ名前の
@@ -1610,9 +2448,9 @@ namespace WerewolfVillage
                     vote_max = j;
                 }
 
-                str += "エージェント名:" + mentalAgentList[j].agent.name.ToString() + ",\r\n信頼度:"
-                    + mentalAgentList[j].reliability.ToString() + "\r\n対応表:\r\n" + mentalAgentList[j].oppositeTable.printOppositeTable()
-                    + "vote :" + mentalAgentList[j].vote + "\r\n";
+                //str += "エージェント名:" + mentalAgentList[j].agent.name.ToString() + ",\r\n信頼度:"
+                //    + mentalAgentList[j].reliability.ToString() + "\r\n対応表:\r\n" + mentalAgentList[j].oppositeTable.printOppositeTable()
+                //    + "vote :" + mentalAgentList[j].vote + "\r\n";
 
             }
 
@@ -1621,10 +2459,21 @@ namespace WerewolfVillage
                 str += "投票先 : " + mentalAgentList[vote_max].agent.name + "\r\n";
                 if (getAgent(name).alive)
                 {
-                    Form1.writeText += name + "    →    " + mentalAgentList[vote_max].agent.name + "\r\n";
+                    Form1.writeText += name + "(" + getAgent(name).agent.role + ")"+"    →    " + mentalAgentList[vote_max].agent.name 
+                        + "(" + mentalAgentList[vote_max].agent.role + ")" + "\r\n";
                 }
             }
             print(str);
+        }
+
+        public void printVote()
+        {
+            if (name != "ならず者ディーター") return;
+            Console.Write(name + "\r\n");
+            for(int i = 0; i < Form1.num_villager; i++)
+            {
+                Console.Write(mentalAgentList[i].agent.name + ":" + mentalAgentList[i].vote + "\r\n");
+            }
         }
 
         public void print(string str)

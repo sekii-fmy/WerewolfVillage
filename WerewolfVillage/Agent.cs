@@ -14,7 +14,7 @@ namespace WerewolfVillage
         霊能者,       //MEDIUM
         狩人,         //BODYGUARD
         狂人,         //POSSESSED
-        人狼,          //WEREWOLF
+        人狼,         //WEREWOLF
     }
 
     class Agent

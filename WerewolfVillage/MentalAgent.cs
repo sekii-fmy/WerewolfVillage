@@ -41,7 +41,7 @@ namespace WerewolfVillage
             vote = 0;
             fortune = 0;
             bodyguard = 0;
-            //raid = 0;
+            raid = 0;
         }
         
         /// <summary>

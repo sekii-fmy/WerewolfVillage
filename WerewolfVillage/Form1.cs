@@ -13,12 +13,15 @@ namespace WerewolfVillage
 {
     public partial class Form1 : Form
     {
+        public static int num_AutoGame = 1;
         public static int num_villager = 15;
         public static string readFile = null;
         public static string[] AgentName = new string[num_villager];
         public static string[] AgentRole = new string[num_villager];
         public static string printText = null;
         public static string writeText = null;
+        public static string resultVoteText = null;
+        public static string resultVoteAndRaidText = null;
         Werewolf werewolf;
 
         public Form1()
@@ -142,8 +145,17 @@ namespace WerewolfVillage
             AgentRole[14] = AgentRole15.Text;
             werewolf = new Werewolf();
             werewolf.startAutoGame();
-            ResultBox.Text = writeText + "but not Vote today. \r\n";
-            File.WriteAllText(@"./LogText.txt", printText);
+            //ResultBox.Text = writeText;
+            //File.WriteAllText(@"./GameData_Village.txt", writeText);
+            //File.WriteAllText(@"./LogText.txt", printText);
+            //File.WriteAllText(@"./ResultVoteText.txt", resultVoteText);
+            //File.WriteAllText(@"./ResultVoteAndRaidText.txt", resultVoteAndRaidText);
+            ResultBox.Text = "End to Game";
+        }
+
+        private void AutoGame_ValueChanged(object sender, EventArgs e)
+        {
+            num_AutoGame = (int)AutoGame.Value;
         }
     }
 }

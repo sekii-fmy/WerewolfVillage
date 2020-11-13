@@ -9,15 +9,16 @@ namespace WerewolfVillage
 
     class Village
     {
-        public static List<Agent> agentList = new List<Agent>(); //エージェントリスト
-        int day = -1;                                      //日付
-        int serialNum = 1;                                //ゲームデータの通し番号
-        int utterNum = 1;                                 //発言の通し番号
-        List<Agent> fortuneAgent = new List<Agent>();     //占われたエージェント
-        List<Agent> bodyGuardAgent = new List<Agent>();   //護衛されたエージェント
-        List<Agent> raidAgent = new List<Agent>();        //襲撃されたエージェント
-        List<Agent> executeAgent = new List<Agent>();     //吊られたエージェント
-        List<Agent> aliveAgent = new List<Agent>();       //
+        public static List<Agent> agentList;            //エージェントリスト
+        int day;                                        //日付
+        int serialNum;                                  //ゲームデータの通し番号
+        int utterNum;                                   //発言の通し番号
+        List<Agent> fortuneAgent;                       //占われたエージェント
+        List<Agent> bodyGuardAgent;                     //護衛されたエージェント
+        List<Agent> raidAgent;                          //襲撃されたエージェント
+        List<Agent> executeAgent;                       //吊られたエージェント
+        List<Agent> aliveAgent;                         //
+        List<ResultOfMatch> resultList;
 
         /// <summary>
         /// 始めに実行。村の住人の生成
@@ -25,6 +26,16 @@ namespace WerewolfVillage
         /// <param name="num_Villager"></param>
         public Village()
         {
+            agentList = new List<Agent>();
+            day = -1;
+            serialNum = 1;
+            utterNum = 1;
+            fortuneAgent = new List<Agent>();
+            bodyGuardAgent = new List<Agent>();
+            raidAgent = new List<Agent>();
+            executeAgent = new List<Agent>();
+            aliveAgent = new List<Agent>();
+
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 agentList.Add(generateAgent(Form1.AgentName[i], Form1.AgentRole[i]));
@@ -49,8 +60,9 @@ namespace WerewolfVillage
         }
 
 
-        public void startGame()
+        public List<ResultOfMatch> startGame(List<ResultOfMatch> list)
         {
+            resultList = list;
             whisper();
             nextDay();
             fortune();
@@ -61,13 +73,21 @@ namespace WerewolfVillage
                 if (!game_Continue()) break;
                 night();
                 nextDay();
-            }            
+            }
+
+            return resultList;
         }
 
         public void nextDay()
         {
             day++;
-            for(int i = 0; i < Form1.num_villager; i++)
+            Form1.printText += "\r\n" + "------------------------------"
+                + dayNum(day) + "------------------------------" + "\r\n\r\n";
+            Form1.resultVoteText += "\r\n" + "------------------------------"
+                + dayNum(day) + "------------------------------" + "\r\n\r\n";
+            Form1.resultVoteAndRaidText += "\r\n" + "------------------------------"
+                + dayNum(day) + "------------------------------" + "\r\n\r\n";
+            for (int i = 0; i < Form1.num_villager; i++)
             {
                 agentList[i].mentalSpace.dayStart();
             }
@@ -90,6 +110,7 @@ namespace WerewolfVillage
                 Guess = target_Vote,
             });
             execute(target_Vote);
+            if (day != -1) makeOutput();
         }
 
         public void night()
@@ -164,7 +185,9 @@ namespace WerewolfVillage
             executeAgent.Add(getAgent(name));
         }
 
-
+        /// <summary>
+        /// 占い
+        /// </summary>
         public void fortune()
         {
             for (int i = 0; i < Form1.num_villager; i++)
@@ -204,9 +227,11 @@ namespace WerewolfVillage
             }
         }
 
+        /// <summary>
+        /// 霊能
+        /// </summary>
         public void psychic()
         {
-            if (day == 0) return;
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if (agentList[i].role == Role.霊能者 && agentList[i].alive)
@@ -245,8 +270,12 @@ namespace WerewolfVillage
             }
         }
 
+        /// <summary>
+        /// 狩人
+        /// </summary>
         public void bodyGuard()
         {
+            Form1.resultVoteAndRaidText += "BodyGuard \r\n";
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if (agentList[i].role == Role.狩人 && agentList[i].alive)
@@ -260,10 +289,12 @@ namespace WerewolfVillage
                         Name = "狩人",
                         Public = "灰",
                         Tag = "狩人",
-                        Guess = agentList[i].name + ":"
-                              + Complement(bodyGuardAgent[day].name) + " ",
+                        Guess = Complement(agentList[i].name) + ":"
+                              + Complement(bodyGuardAgent[day].name),
 
                     });
+                    Form1.resultVoteAndRaidText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
+                         + bodyGuardAgent[day].name + "(" + getAgent(bodyGuardAgent[day].name).role + ")" + "\r\n";
                 }
             }
         }
@@ -281,6 +312,8 @@ namespace WerewolfVillage
             int max_vote = 0;
             int seed = Environment.TickCount;
             Random rnd = new Random(seed++);
+            Form1.resultVoteText += "Vote \r\n";
+            Form1.resultVoteAndRaidText += "Vote \r\n";
 
             GameData voteData = new GameData
             {
@@ -301,6 +334,11 @@ namespace WerewolfVillage
 
                     voteData.Guess += Complement(agentList[i].name) + ":"
                         + Complement(voteArray[i]) + " ";
+
+                    Form1.resultVoteText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
+                         + voteArray[i] + "(" + getAgent(voteArray[i]).role + ")" + "\r\n";
+                    Form1.resultVoteAndRaidText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
+                         + voteArray[i] + "(" + getAgent(voteArray[i]).role + ")" + "\r\n";
                 }
             }
             generateGameData(voteData);
@@ -320,6 +358,11 @@ namespace WerewolfVillage
                 rndInt = rnd.Next(0, Form1.num_villager);
             }
 
+            Form1.resultVoteText += "投票結果 : " + agentList[rndInt].name 
+                + "(" + agentList[rndInt].role + ")\r\n\r\n";
+            Form1.resultVoteAndRaidText += "投票結果 : " + agentList[rndInt].name
+                + "(" + agentList[rndInt].role + ")\r\n\r\n";
+
             return agentList[rndInt].name;
         }
 
@@ -330,22 +373,27 @@ namespace WerewolfVillage
         /// </summary>
         public void raid()
         {
-            int[] raidVote = new int[Form1.num_villager];
+            string[] raidArray = new string[Form1.num_villager];
+            int[] raidCountVote = new int[Form1.num_villager];
             int max_vote = 0;
             int seed = Environment.TickCount;
             Random rnd = new Random(seed++);
+            Form1.resultVoteAndRaidText += "Raid \r\n";
 
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if (agentList[i].role == Role.人狼 && agentList[i].alive)
                 {
-                    raidVote[getAgentNum(agentList[i].getRaid())]++;
+                    raidArray[i] = agentList[i].getRaid();
+                    raidCountVote[getAgentNum(raidArray[i])]++;
+                    Form1.resultVoteAndRaidText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
+                         + raidArray[i] + "(" + getAgent(raidArray[i]).role + ")" + "\r\n";
                 }
             }
 
             for (int j = 0; j < Form1.num_villager; j++)
             {
-                if (raidVote[j] > raidVote[max_vote] && agentList[j].alive)
+                if (raidCountVote[j] > raidCountVote[max_vote] && agentList[j].alive)
                 {
                     max_vote = j;
                 }
@@ -353,7 +401,7 @@ namespace WerewolfVillage
 
             int rndInt = rnd.Next(0, Form1.num_villager);
 
-            while (raidVote[rndInt] != raidVote[max_vote])
+            while (raidCountVote[rndInt] != raidCountVote[max_vote])
             {
                 rndInt = rnd.Next(0, Form1.num_villager);
             }
@@ -372,6 +420,8 @@ namespace WerewolfVillage
                 });
                 raidAgent.Add(agentList[rndInt]);
                 agentList[rndInt].alive = false;
+                Form1.resultVoteAndRaidText += "襲撃結果 : " + agentList[rndInt].name 
+                    +"(" + agentList[rndInt].role + ")\r\n\r\n";
             }
             else if (agentList[rndInt].name == bodyGuardAgent[day].name)
             {
@@ -385,6 +435,8 @@ namespace WerewolfVillage
                     Guess = "失敗",
 
                 });
+                Form1.resultVoteAndRaidText += "襲撃結果 : " + agentList[rndInt].name 
+                    + "(" + agentList[rndInt].role + ")(失敗)\r\n\r\n";
             }
             else
             {
@@ -400,6 +452,8 @@ namespace WerewolfVillage
                 });
                 raidAgent.Add(agentList[rndInt]);
                 agentList[rndInt].alive = false;
+                Form1.resultVoteAndRaidText += "襲撃結果 : " + agentList[rndInt].name 
+                    + "(" + agentList[rndInt].role + ")\r\n\r\n";
             }
         }
 
@@ -556,6 +610,7 @@ namespace WerewolfVillage
                     Tag = "ゲーム結果",
                     Guess = "村勝利",
                 });
+                villagerWin();
             }
             else{
                 generateGameData(new GameData
@@ -567,34 +622,58 @@ namespace WerewolfVillage
                     Tag = "ゲーム結果",
                     Guess = "人狼勝利",
                 });
+                wolfWin();
             }
             makeOutput();
         }
 
-
+        /// <summary>
+        /// ゲームデータのエージェントへの送信
+        /// </summary>
+        /// <param name="gameData"></param>
         public void generateGameData(GameData gameData)
         {
+            gameData = new TagToUtterance().convertTagToUtterance(gameData);
             for (int i = 0; i < Form1.num_villager; i++)
             {
+                GameData data = new GameData
+                {
+                    SerialNum = gameData.SerialNum,
+                    UtterNum = gameData.UtterNum,
+                    Day = gameData.Day,
+                    Name = gameData.Name,
+                    Public = gameData.Public,
+                    Tag = "",
+                    Guess = "",
+                    Disire = "",
+                    Confirm = "",
+                    Reliability = "",
+                    Line = "",
+                    Questtion = "",
+                    Memo = "",
+                    Role = "",
+                    Utterance = gameData.Utterance,
+                };
                 if (agentList[i].alive)
                 {
                     if (gameData.Public == "白")
                     {
-                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveData(gameData);
+                        agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                     else if (gameData.Public == "灰" && gameData.Name == agentList[i].name)
                     {
-                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveData(gameData);
+                        agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                     else if (gameData.Public == "赤" && agentList[i].role == Role.人狼)
                     {
-                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveData(gameData);
+                        agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                 }
             }
-
             outputGamedata(gameData);
-
         }
 
 
@@ -770,7 +849,7 @@ namespace WerewolfVillage
 
         public void outputGamedata(GameData gameData)
         {
-            Form1.printText +=
+            Form1.writeText +=
                   gameData.SerialNum + ","
                 + gameData.UtterNum + ","
                 + gameData.Day + ","
@@ -787,6 +866,11 @@ namespace WerewolfVillage
                 + gameData.Role + ","
                 + gameData.Utterance + "\r\n";
 
+            //consoleOutPut(gameData);
+        }
+
+        public void consoleOutPut(GameData gameData)
+        {
             Console.Write(
                   gameData.SerialNum + ","
                 + gameData.UtterNum + ","
@@ -805,11 +889,53 @@ namespace WerewolfVillage
                 + gameData.Utterance + "\r\n");
         }
 
+        public void villagerWin()
+        {
+            for(int i = 0; i < Form1.num_villager; i++)
+            {
+                if(agentList[i].role == Role.村人 || agentList[i].role == Role.占い師
+                    || agentList[i].role == Role.狩人 || agentList[i].role == Role.霊能者)
+                {
+                    resultList[i].num_game++;
+                    resultList[i].num_win++;
+                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                    resultList[i].num_roleWin[(int)agentList[i].role]++;
+                }
+                else
+                {
+                    resultList[i].num_game++;
+                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                }
+            }
+        }
+
+        public void wolfWin()
+        {
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if (agentList[i].role == Role.人狼 || agentList[i].role == Role.狂人)
+                {
+                    resultList[i].num_game++;
+                    resultList[i].num_win++;
+                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                    resultList[i].num_roleWin[(int)agentList[i].role]++;
+                }
+                else
+                {
+                    resultList[i].num_game++;
+                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                }
+            }
+        }
+
         public void makeOutput()
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                agentList[i].mentalSpace.printList();
+                if (agentList[i].alive)
+                {
+                    agentList[i].mentalSpace.printList();
+                }
             }
         }
     }

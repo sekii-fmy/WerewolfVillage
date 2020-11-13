@@ -35,11 +35,14 @@ namespace WerewolfVillage
             }
         }
 
-
-
         /// <summary>
         /// 対応表の出力
         /// </summary>
+        public double[,] getOppositeTable()
+        {
+            return table;
+        }
+
         public string printOppositeTable()
         {
             string str = null;
@@ -48,7 +51,7 @@ namespace WerewolfVillage
                 str += "｛";
                 for (int j = 0; j < num_role; j++)
                 {
-                    str += table[i, j].ToString() + ",";
+                    str += table[i, j].ToString("F3") + ",";
                 }
                 str += "｝ \r\n";
             }

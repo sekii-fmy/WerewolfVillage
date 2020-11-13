@@ -82,6 +82,9 @@
             this.GerdButton = new System.Windows.Forms.RadioButton();
             this.nextDayButton = new System.Windows.Forms.Button();
             this.StartAutoGame = new System.Windows.Forms.Button();
+            this.AutoGame = new System.Windows.Forms.NumericUpDown();
+            this.label17 = new System.Windows.Forms.Label();
+            ((System.ComponentModel.ISupportInitialize)(this.AutoGame)).BeginInit();
             this.SuspendLayout();
             // 
             // Startbutton
@@ -1022,11 +1025,40 @@
             this.StartAutoGame.UseVisualStyleBackColor = true;
             this.StartAutoGame.Click += new System.EventHandler(this.StartAutoGame_Click);
             // 
+            // AutoGame
+            // 
+            this.AutoGame.Location = new System.Drawing.Point(599, 289);
+            this.AutoGame.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.AutoGame.Name = "AutoGame";
+            this.AutoGame.Size = new System.Drawing.Size(133, 25);
+            this.AutoGame.TabIndex = 55;
+            this.AutoGame.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.AutoGame.ValueChanged += new System.EventHandler(this.AutoGame_ValueChanged);
+            // 
+            // label17
+            // 
+            this.label17.AutoSize = true;
+            this.label17.Location = new System.Drawing.Point(521, 291);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(61, 18);
+            this.label17.TabIndex = 56;
+            this.label17.Text = "Repeat";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(972, 670);
+            this.Controls.Add(this.label17);
+            this.Controls.Add(this.AutoGame);
             this.Controls.Add(this.StartAutoGame);
             this.Controls.Add(this.nextDayButton);
             this.Controls.Add(this.GerdButton);
@@ -1083,6 +1115,7 @@
             this.Controls.Add(this.Startbutton);
             this.Name = "Form1";
             this.Text = "Form1";
+            ((System.ComponentModel.ISupportInitialize)(this.AutoGame)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1144,6 +1177,8 @@
         private System.Windows.Forms.RadioButton GerdButton;
         private System.Windows.Forms.Button nextDayButton;
         private System.Windows.Forms.Button StartAutoGame;
+        private System.Windows.Forms.NumericUpDown AutoGame;
+        private System.Windows.Forms.Label label17;
     }
 }
 

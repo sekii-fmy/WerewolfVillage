@@ -9,7 +9,7 @@ namespace WerewolfVillage
 
     class Village
     {
-        public static List<Agent> agentList;            //エージェントリスト
+        public List<Agent> agentList;                   //エージェントリスト
         int day;                                        //日付
         int serialNum;                                  //ゲームデータの通し番号
         int utterNum;                                   //発言の通し番号
@@ -18,15 +18,14 @@ namespace WerewolfVillage
         List<Agent> raidAgent;                          //襲撃されたエージェント
         List<Agent> executeAgent;                       //吊られたエージェント
         List<Agent> aliveAgent;                         //
-        List<ResultOfMatch> resultList;
 
         /// <summary>
         /// 始めに実行。村の住人の生成
         /// </summary>
         /// <param name="num_Villager"></param>
-        public Village()
+        public Village(List<Agent> villagers)
         {
-            agentList = new List<Agent>();
+            agentList = villagers;
             day = -1;
             serialNum = 1;
             utterNum = 1;
@@ -38,31 +37,60 @@ namespace WerewolfVillage
 
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                agentList.Add(generateAgent(Form1.AgentName[i], Form1.AgentRole[i]));
+                agentList[i].generateMentalSpace(Form1.AgentName[i]);
             }
+
+            distributeRole();
 
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                agentList[i].mentalSpace.generateMentalAgent();
+                agentList[i].mentalSpace.generateMentalAgent(agentList);
             }
 
         }
 
         /// <summary>
-        /// 村人の生成
+        /// 役職の割り振り
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public Agent generateAgent(string name, string agentRole)
+        public void distributeRole()
         {
-            Agent agent = new Agent(name,agentRole);
-            return agent;
+            int[] roleArray = randomArray(Form1.num_villager);
+            
+            for(int i = 0; i < Form1.num_villager; i++)
+            {
+                switch (roleArray[i])
+                {
+                    case 1:
+                        agentList[i].role = Role.占い師;
+                        break;
+                    case 2:
+                        agentList[i].role = Role.霊能者;
+                        break;
+                    case 3:
+                        agentList[i].role = Role.狩人;
+                        break;
+                    case 4:
+                        agentList[i].role = Role.狂人;
+                        break;
+                    case 5:
+                        agentList[i].role = Role.人狼;
+                        break;
+                    case 6:
+                        agentList[i].role = Role.人狼;
+                        break;
+                    case 7:
+                        agentList[i].role = Role.人狼;
+                        break;
+                    default:
+                        agentList[i].role = Role.村人;
+                        break;
+                }
+            }
         }
 
 
-        public List<ResultOfMatch> startGame(List<ResultOfMatch> list)
+        public void startGame()
         {
-            resultList = list;
             whisper();
             nextDay();
             fortune();
@@ -74,8 +102,6 @@ namespace WerewolfVillage
                 night();
                 nextDay();
             }
-
-            return resultList;
         }
 
         public void nextDay()
@@ -339,6 +365,11 @@ namespace WerewolfVillage
                          + voteArray[i] + "(" + getAgent(voteArray[i]).role + ")" + "\r\n";
                     Form1.resultVoteAndRaidText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
                          + voteArray[i] + "(" + getAgent(voteArray[i]).role + ")" + "\r\n";
+
+                    if (getAgent(voteArray[i]).role == Role.人狼 && agentList[i].role != Role.人狼)
+                    {
+                        agentList[i].resultMatch.result_VOTEtoWOLF();
+                    }
                 }
             }
             generateGameData(voteData);
@@ -633,7 +664,7 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void generateGameData(GameData gameData)
         {
-            gameData = new TagToUtterance().convertTagToUtterance(gameData);
+            //gameData = new TagToUtterance().convertTagToUtterance(gameData);
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 GameData data = new GameData
@@ -658,18 +689,18 @@ namespace WerewolfVillage
                 {
                     if (gameData.Public == "白")
                     {
-                        //agentList[i].mentalSpace.receiveData(gameData);
-                        agentList[i].mentalSpace.receiveUtteracne(data);
+                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                     else if (gameData.Public == "灰" && gameData.Name == agentList[i].name)
                     {
-                        //agentList[i].mentalSpace.receiveData(gameData);
-                        agentList[i].mentalSpace.receiveUtteracne(data);
+                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                     else if (gameData.Public == "赤" && agentList[i].role == Role.人狼)
                     {
-                        //agentList[i].mentalSpace.receiveData(gameData);
-                        agentList[i].mentalSpace.receiveUtteracne(data);
+                        agentList[i].mentalSpace.receiveData(gameData);
+                        //agentList[i].mentalSpace.receiveUtteracne(data);
                     }
                 }
             }
@@ -866,7 +897,7 @@ namespace WerewolfVillage
                 + gameData.Role + ","
                 + gameData.Utterance + "\r\n";
 
-            //consoleOutPut(gameData);
+            consoleOutPut(gameData);
         }
 
         public void consoleOutPut(GameData gameData)
@@ -896,15 +927,25 @@ namespace WerewolfVillage
                 if(agentList[i].role == Role.村人 || agentList[i].role == Role.占い師
                     || agentList[i].role == Role.狩人 || agentList[i].role == Role.霊能者)
                 {
-                    resultList[i].num_game++;
-                    resultList[i].num_win++;
-                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
-                    resultList[i].num_roleWin[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_game++;
+                    agentList[i].resultMatch.num_win++;
+                    agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_roleWin[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.result_WIN();
+                    if (agentList[i].alive)
+                    {
+                        agentList[i].resultMatch.result_VILLAGERALIVE();
+                    }
                 }
                 else
                 {
-                    resultList[i].num_game++;
-                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_game++;
+                    agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.result_LOSE();
+                    if (agentList[i].alive)
+                    {
+                        agentList[i].resultMatch.result_WOLFALIVE();
+                    }
                 }
             }
         }
@@ -915,15 +956,25 @@ namespace WerewolfVillage
             {
                 if (agentList[i].role == Role.人狼 || agentList[i].role == Role.狂人)
                 {
-                    resultList[i].num_game++;
-                    resultList[i].num_win++;
-                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
-                    resultList[i].num_roleWin[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_game++;
+                    agentList[i].resultMatch.num_win++;
+                    agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_roleWin[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.result_WIN();
+                    if (agentList[i].alive)
+                    {
+                        agentList[i].resultMatch.result_WOLFALIVE();
+                    }
                 }
                 else
                 {
-                    resultList[i].num_game++;
-                    resultList[i].num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.num_game++;
+                    agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
+                    agentList[i].resultMatch.result_LOSE();
+                    if (agentList[i].alive)
+                    {
+                        agentList[i].resultMatch.result_VILLAGERALIVE();
+                    }
                 }
             }
         }

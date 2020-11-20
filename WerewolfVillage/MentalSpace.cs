@@ -9,6 +9,7 @@ namespace WerewolfVillage
 {
     class MentalSpace
     {
+        GeneOfParameter gene;
         string name;
         Role myRole = Role.村人;
         bool isCO = false;
@@ -17,6 +18,7 @@ namespace WerewolfVillage
         bool isSendSkip = false;
         bool isSendDisire = false;
         bool isSendEstimate = false;
+        bool isSendLine = false;
         bool iswolfCO = false;
         bool isDisireCO = false;
         bool isDisireRaid = false;
@@ -27,6 +29,7 @@ namespace WerewolfVillage
         string[] disireCO = new string[3];
         string[] disireRaid = new string[3];
         int[] num_roleCO = new int[6] { 0, 0, 0, 0, 0, 0 };
+        double[] probaCO = new double[6] { 0, 0, 0, 0, 0, 0 };
         OppositeTable myTable = new OppositeTable();
 
         public class Result_fortune
@@ -54,19 +57,20 @@ namespace WerewolfVillage
         List<GameData> result_RaidList = new List<GameData>();                  //襲撃結果のリスト
 
 
-        public MentalSpace(string name)
+        public MentalSpace(string name, GeneOfParameter parameter)
         {
             this.name = name;
+            gene = parameter;
         }
 
         /// <summary>
         /// メンタルエージェントの生成
         /// </summary>
-        public void generateMentalAgent()
+        public void generateMentalAgent(List<Agent> agent)
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                MentalAgent mentalAgent = new MentalAgent(ref Village.agentList, i);
+                MentalAgent mentalAgent = new MentalAgent(agent[i]);
                 mentalAgentList.Add(mentalAgent);
             }
         }
@@ -77,6 +81,7 @@ namespace WerewolfVillage
             isSendResultOfPsychic = false;
             isSendDisire = false;
             isSendEstimate = false;
+            isSendLine = false;
             isDisireRaid = false;
             isDisireCO = false;
             isSendSkip = false;
@@ -181,6 +186,11 @@ namespace WerewolfVillage
             intention_BodyGuard();
             intention_Raid();
             decideOfVote();
+
+            checkRaid();
+            checkVote();
+            checkFortune();
+            checkBodyGuard();
         }
 
 
@@ -313,105 +323,111 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void inferenceGuess(GameData gameData)
         {
-            string[] values = gameData.Guess.Split(' ');
-            double soften = 1;
-            int invert = 1;
-            foreach(string value in values)
+            if(gameData.Name != name)
             {
-                if (value.Contains("CO") != true)   //COの情報でない
+                string[] values = gameData.Guess.Split(' ');
+                double soften = 1;
+                double invert = 1;
+                foreach (string value in values)
                 {
-                    string[] guess = value.Split(':'); 
-                    if(guess[0].Length == 1)
+                    if (value.Contains("CO") != true)   //COの情報でない
                     {
-                        guess[0] = Abbreviation(guess[0]);
-                        if (guess[1].Contains("非"))
+                        string[] guess = value.Split(':');
+                        if (guess[0].Length == 1)
                         {
-                            invert = -1;
-                            guess[1] = guess[1].Remove(0, 1);
-                        }
-                        if (guess[1].Contains("寄り"))
-                        {
-                            soften = 0.5;
-                            guess[1] = guess[1].Substring(0,guess[1].Length - 2);
-                        }
+                            guess[0] = Abbreviation(guess[0]);
 
-                        switch (guess[1])
-                        {
-                            case "村人":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += 0.5 * invert * soften;   
-                                break;
-                            case "占い師":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += 0.5 * invert * soften;
-                                break;
-                            case "霊能者":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += 0.5 * invert * soften;
-                                break;
-                            case "狩人":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += 0.5 * invert * soften;
-                                break;
-                            case "狂人":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += 0.5 * invert * soften;
-                                break;
-                            case "人狼":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += 0.5 * invert * soften;
-                                break;
-                            case "白":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += 0.365 * invert * soften;   //村人 
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += 0.045 * invert * soften;   //占い師
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += 0.045 * invert * soften;   //霊能者
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += 0.045 * invert * soften;   //狩人
-                                break;
-                            case "黒":
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += 0.13 * invert * soften;    //狂人
-                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += 0.37 * invert * soften;    //人狼
-                                break;
-                            default:
-                                break;
-
-                        }
-
-                    }
-                    else if(guess[0].Length > 1)//guess[0].length!=1
-                    {
-                        string[] roles = guess[1].Split('-');
-                        for(int i =0; i < guess[0].Length; i++)
-                        {
-                            for (int j = 0; j < guess[0].Length; j++)
+                            if (guess[1].Contains("寄り"))
                             {
-                                switch (roles[j])
-                                {
-                                    case "村人":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += 0.5 * invert * soften;   
-                                        break;
-                                    case "占い師":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += 0.5 * invert * soften;
-                                        break;
-                                    case "霊能者":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += 0.5 * invert * soften;
-                                        break;
-                                    case "狩人":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += 0.5 * invert * soften;
-                                        break;
-                                    case "狂人":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += 0.5 * invert * soften;
-                                        break;
-                                    case "人狼":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += 0.5 * invert * soften;
-                                        break;
-                                    case "白":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += 0.365 * invert * soften;   //村人 
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += 0.045 * invert * soften;   //占い師
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += 0.045 * invert * soften;   //霊能者
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += 0.045 * invert * soften;   //狩人
-                                        break;
-                                    case "黒":
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += 0.13 * invert * soften;    //狂人
-                                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += 0.37 * invert * soften;    //人狼
-                                        break;
-                                }
+                                soften = gene.parameter[30];
+                                guess[1] = guess[1].Substring(0, guess[1].Length - 2);
+                            }
+
+                            if (guess[1].Contains("非"))
+                            {
+                                invert = -1 * gene.parameter[31];
+                                guess[1] = guess[1].Remove(0, 1);
 
                             }
-                            guess[0] = guess[0].Remove(0, 1);
+
+                            switch (guess[1])
+                            {
+                                case "村人":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += gene.parameter[32] * invert * soften;
+                                    break;
+                                case "占い師":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += gene.parameter[33] * invert * soften;
+                                    break;
+                                case "霊能者":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += gene.parameter[34] * invert * soften;
+                                    break;
+                                case "狩人":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += gene.parameter[35] * invert * soften;
+                                    break;
+                                case "狂人":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += gene.parameter[36] * invert * soften;
+                                    break;
+                                case "人狼":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += gene.parameter[37] * invert * soften;
+                                    break;
+                                case "白":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += 0.365 * invert * soften;   //村人 
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += 0.045 * invert * soften;   //占い師
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += 0.045 * invert * soften;   //霊能者
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += 0.045 * invert * soften;   //狩人
+                                    break;
+                                case "黒":
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += 0.13 * invert * soften;    //狂人
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += 0.37 * invert * soften;    //人狼
+                                    break;
+                                default:
+                                    break;
+
+                            }
+
+                        }
+                        else if (guess[0].Length > 1)//guess[0].length!=1
+                        {
+                            string[] roles = guess[1].Split('-');
+                            for (int i = 0; i < guess[0].Length; i++)
+                            {
+                                for (int j = 0; j < guess[0].Length; j++)
+                                {
+                                    switch (roles[j])
+                                    {
+                                        case "村人":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += gene.parameter[32] * invert * soften;
+                                            break;
+                                        case "占い師":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += gene.parameter[33] * invert * soften;
+                                            break;
+                                        case "霊能者":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += gene.parameter[34] * invert * soften;
+                                            break;
+                                        case "狩人":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += gene.parameter[35] * invert * soften;
+                                            break;
+                                        case "狂人":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += gene.parameter[36] * invert * soften;
+                                            break;
+                                        case "人狼":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += gene.parameter[37] * invert * soften;
+                                            break;
+                                        case "白":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += 0.365 * invert * soften;   //村人 
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += 0.045 * invert * soften;   //占い師
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += 0.045 * invert * soften;   //霊能者
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += 0.045 * invert * soften;   //狩人
+                                            break;
+                                        case "黒":
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += 0.13 * invert * soften;    //狂人
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += 0.37 * invert * soften;    //人狼
+                                            break;
+                                    }
+
+                                }
+                                guess[0] = guess[0].Remove(0, 1);
+                            }
                         }
                     }
                 }
@@ -551,77 +567,77 @@ namespace WerewolfVillage
                 if (value.Contains("CO") == true)       //COの情報である
                 {
                     string[] co = value.Split(':');
-                    if (co[1].Contains("非"))
-                    {
-                        rolevalue = -1;
-                        co[1] = co[1].Substring(1);
-                    }
                     co[0] = Abbreviation(co[0]);
                     co[1] = co[1].Substring(0, co[1].Length - 2); //"CO"を消す
+                    if (co[1].Contains("非"))
+                    {
+                        rolevalue = -1 * gene.parameter[29];
+                        co[1] = co[1].Substring(1);
+                    }
                     switch (co[1])
                     {
                         case "村人":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 0] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 0] = rolevalue * gene.parameter[12];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] += 1.0 * rolevalue * getAgent(gameData.Name).reliability;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] += gene.parameter[13] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)];
                                 }
                             }
                             break;
                         case "占い師":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 1] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 1] = rolevalue * gene.parameter[14];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] += 1.0 * rolevalue * getAgent(gameData.Name).reliability / num_roleCO[1];
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= 0.5;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] += gene.parameter[15] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[1];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[16];
                                 }
                             }
                             break;
                         case "霊能者":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 2] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 2] = rolevalue * gene.parameter[17];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] += 1.0 * rolevalue * getAgent(gameData.Name).reliability / num_roleCO[2];
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= 0.5;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] += gene.parameter[18] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[2];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[19];
                                 }
                             }
                             break;
                         case "狩人":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 3] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 3] = rolevalue * gene.parameter[20];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] += 1.0 * rolevalue * getAgent(gameData.Name).reliability / num_roleCO[3];
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= 0.5;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] += gene.parameter[21] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[3];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[22];
                                 }
                             }
                             break;
                         case "狂人":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 4] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 4] = rolevalue * gene.parameter[23];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 4] += 1.0 * rolevalue * getAgent(gameData.Name).reliability / num_roleCO[4];
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= 0.5;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 4] += gene.parameter[24] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[4];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[25];
                                 }
                             }
                             break;
                         case "人狼":
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 5] = rolevalue;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(co[0]), 5] = rolevalue * gene.parameter[26];
                             for (int i = 0; i < Form1.num_villager; i++)
                             {
                                 if (getAgentNum(gameData.Name) != i)
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 5] += 1.0 * rolevalue * getAgent(gameData.Name).reliability / num_roleCO[5];
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= 0.5;
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 5] += gene.parameter[27] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[5];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[28];
                                 }
                             }
                             break;
@@ -652,7 +668,7 @@ namespace WerewolfVillage
                     //(自分が人狼のとき）
                     if (values[0] == name && (mentalAgentList[getAgentNum(name)].agent.role == Role.人狼))
                     {
-                        getAgent(gameData.Name).reliability -= 0.5;
+                        getAgent(name).reliability[getAgentNum(gameData.Name)] -= gene.parameter[40];
                     }
                     break;
                 case "人狼":
@@ -662,10 +678,11 @@ namespace WerewolfVillage
                     //(自分が人狼でないとき）
                     if (values[0] == name && (mentalAgentList[getAgentNum(name)].agent.role != Role.人狼))
                     {
-                        getAgent(gameData.Name).reliability -= 0.5;
+                        getAgent(name).reliability[getAgentNum(gameData.Name)] -= gene.parameter[46];
                     }
                     break;
             }
+            seerParadox();
         }
 
         /// <summary>
@@ -676,51 +693,62 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void resultOfFortune(GameData gameData)
         {
-            string[] values = gameData.Guess.Split(':');
-            values[0] = Abbreviation(values[0]);
-            if (values[0] == null) return;
-            switch (values[1])
+            if (num_roleCO[1] != 0)
             {
-                case "人間":
-                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] = 0;
-                    //占い師の対応表において人狼値を0
+                string[] values = gameData.Guess.Split(':');
+                values[0] = Abbreviation(values[0]);
+                if (values[0] == null) return;
+                switch (values[1])
+                {
+                    case "人間":
+                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] -= gene.parameter[38];
+                        //占い師の対応表において人狼値を0
 
-                    for (int i = 0; i < Form1.num_villager; i++)
-                    {
-                        if (!(values[0] == name) || !(getAgentNum(name) == i))
-                        {
-                            mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] -= 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[1]);
-                        }
-                    }
-                    //占い師以外の対応表において人狼値を減らす
-                    break;
-
-                case "人狼":
-                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] = 1;     
-                    //占い師の対応表において人狼値を1
-                    for ( int j = 0; j < 5; j++)
-                    {
-                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), j] = 0;
-                    }
-                    //占い師の対応表において人間値を0
-
-                    for (int i = 0; i < Form1.num_villager; i++)
-                    {
-                        if (getAgentNum(gameData.Name) != i)
+                        for (int i = 0; i < Form1.num_villager; i++)
                         {
                             if (!(values[0] == name) || !(getAgentNum(name) == i))
                             {
-                                mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] += 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[1]);
-                                //占い師以外の対応表において人狼値を上げる
-                                for (int j = 0; j < 5; j++)
+                                mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] -= gene.parameter[39] * getAgent(name).reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[1]);
+                            }
+                        }//占い師以外の対応表において人狼値を減らす
+
+                        if (values[0] == name && (getAgent(name).agent.role == Role.人狼))
+                        {
+                            getAgent(name).oppositeTable.table[getAgentNum(gameData.Name), 2] -= gene.parameter[41];
+                        }//人狼の自分を人間と占われたとき、占い師値を下げる。
+                        break;
+
+                    case "人狼":
+                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] += gene.parameter[42];
+                        //占い師の対応表において人狼値を1
+                        for (int j = 0; j < 5; j++)
+                        {
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), j] -= gene.parameter[43];
+                        }
+                        //占い師の対応表において人間値を0
+
+                        for (int i = 0; i < Form1.num_villager; i++)
+                        {
+                            if (getAgentNum(gameData.Name) != i)
+                            {
+                                if (!(values[0] == name) || !(getAgentNum(name) == i))
                                 {
-                                    mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), j] -= 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[1]);
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] += gene.parameter[44] * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[1]);
+                                    //占い師以外の対応表において人狼値を上げる
+                                    for (int j = 0; j < 5; j++)
+                                    {
+                                        mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), j] -= gene.parameter[45] * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[1]);
+                                    }
+                                    //占い師以外の対応表において人間値を下げる
                                 }
-                                //占い師以外の対応表において人間値を下げる
                             }
                         }
-                    }
-                    break;
+                        if (values[0] == name && (mentalAgentList[getAgentNum(name)].agent.role != Role.人狼))
+                        {
+                            getAgent(name).oppositeTable.table[getAgentNum(gameData.Name), 2] -= gene.parameter[47];
+                        }//人間の自分を人狼と占われたとき、占い師値を下げる。
+                        break;
+                }
             }
         }
 
@@ -750,6 +778,7 @@ namespace WerewolfVillage
                     seerpsychicReliability(result_Psychic);
                     break;
             }
+            psychicParadox();
         }
 
         /// <summary>
@@ -760,43 +789,46 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void resultOfPsychic(GameData gameData)
         {
-            string[] values = gameData.Guess.Split(':');
-            values[0] = Abbreviation(values[0]);
-            if (values[0] == null) return;
-            switch (values[1])
+            if(num_roleCO[2] != 0)
             {
-                case "人間":
-                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] = 0;
-                    //霊能者の対応表において人狼値を0
-                    for (int i = 0; i < Form1.num_villager; i++)
-                    {
-                        mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] -= 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[2]);
-                    }
-                    //霊能以外の対応表において人狼値を減らす
-                    break;
-
-                case "人狼":
-                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] = 1;
-                    //霊能者の対応表において人狼値を1
-                    for (int i = 0; i < 5; i++)
-                    {
-                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), i] = 0;
-                    }
-                    //霊能者の対応表において人間値を0
-
-                    for (int i = 0; i < Form1.num_villager; i++)
-                    {
-                        if (getAgentNum(gameData.Name) == i) break;
-
-                        mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] += 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[2]);
-                        //占い師以外の対応表において人狼値を上げる
-                        for (int j = 0; j < 5; j++)
+                string[] values = gameData.Guess.Split(':');
+                values[0] = Abbreviation(values[0]);
+                if (values[0] == null) return;
+                switch (values[1])
+                {
+                    case "人間":
+                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] -= gene.parameter[48];
+                        //霊能者の対応表において人狼値を0
+                        for (int i = 0; i < Form1.num_villager; i++)
                         {
-                            mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), j] -= 0.5 * getAgent(gameData.Name).reliability * (1 / (double)num_roleCO[2]);
+                            mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] -= gene.parameter[49] * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[2]);
                         }
-                        //占い師以外の対応表において人間値を下げる
-                    }
-                    break;
+                        //霊能以外の対応表において人狼値を減らす
+                        break;
+
+                    case "人狼":
+                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), 5] += gene.parameter[50];
+                        //霊能者の対応表において人狼値を1
+                        for (int i = 0; i < 5; i++)
+                        {
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[0]), i] -= gene.parameter[51];
+                        }
+                        //霊能者の対応表において人間値を0
+
+                        for (int i = 0; i < Form1.num_villager; i++)
+                        {
+                            if (getAgentNum(gameData.Name) == i) break;
+
+                            mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), 5] += gene.parameter[52] * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[2]);
+                            //占い師以外の対応表において人狼値を上げる
+                            for (int j = 0; j < 5; j++)
+                            {
+                                mentalAgentList[i].oppositeTable.table[getAgentNum(values[0]), j] -= gene.parameter[53] * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] * (1 / (double)num_roleCO[2]);
+                            }
+                            //占い師以外の対応表において人間値を下げる
+                        }
+                        break;
+                }
             }
         }
 
@@ -808,19 +840,22 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public void resultOfGuard(GameData gameData)
         {
-            foreach(string data in gameData.Guess.Split(' '))
+            if(num_roleCO[3] != 0)
             {
-                string[] values = data.Split(':');
-                if (values[0] == "護衛結果")
+                foreach (string data in gameData.Guess.Split(' '))
                 {
-                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[1]), 5] = 0;
-                    for (int i = 0; i < Form1.num_villager; i++)
+                    string[] values = data.Split(':');
+                    if (values[0] == "護衛結果")
                     {
-                        mentalAgentList[i].oppositeTable.table[getAgentNum(values[1]), 5] 
-                            -= 1.0 * (1 / (double)num_roleCO[3]) * getAgent(gameData.Name).reliability;
+                        getAgent(gameData.Name).oppositeTable.table[getAgentNum(values[1]), 5] -= gene.parameter[54];
+                        for (int i = 0; i < Form1.num_villager; i++)
+                        {
+                            mentalAgentList[i].oppositeTable.table[getAgentNum(values[1]), 5]
+                                -= gene.parameter[55]* (1 / (double)num_roleCO[3]) * mentalAgentList[i].reliability[getAgentNum(gameData.Name)];
+                        }
                     }
                 }
-            }         
+            }        
         }
 
         /// <summary>
@@ -951,18 +986,13 @@ namespace WerewolfVillage
         /// 襲撃結果
         /// 襲撃されたプレイヤの人狼値を0
         /// 襲撃に失敗したとき、同じ相手への襲撃意思を下げる
-        /// 護衛に成功したとき、同じ相手への護衛意思を少し下げる
         /// </summary>
         /// <param name="gameData"></param>
         public void inferenceRaid(GameData gameData)
         {
             if(gameData.Guess == "失敗")
             {
-                getAgent(decideRaid()).raid -= 1.0;
-                if (getAgent(name).agent.role == Role.狩人)
-                {
-                    getAgent(bodyGuardList[bodyGuardList.Count - 1]).bodyguard -= 0.2;
-                }
+                getAgent(decideRaid()).raid -= gene.parameter[56];
                 return;
             }
             else
@@ -1003,19 +1033,19 @@ namespace WerewolfVillage
                         if(disire[1].Substring(0, 1) == "非")
                         {
                             disire[1] = disire[1].Remove(0, 1);
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] -= 0.25;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] -= gene.parameter[57];
                             if (gameData.Name == name)
                             {
-                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].fortune -= 0.3 * getAgent(gameData.Name).reliability;
+                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].fortune -= gene.parameter[58] * getAgent(name).reliability[getAgentNum(gameData.Name)];
                             }
                             disire[1] = disire[1].Remove(0, 1);
                         }
                         else
                         {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] += 0.25;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] += gene.parameter[57];
                             if (gameData.Name == name)
                             {
-                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].fortune -= 0.3 * getAgent(gameData.Name).reliability;
+                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].fortune -= gene.parameter[58] * getAgent(name).reliability[getAgentNum(gameData.Name)];
                             }
                             disire[1] = disire[1].Remove(0, 1);
                         }
@@ -1028,19 +1058,19 @@ namespace WerewolfVillage
                         if (disire[1].Substring(0, 1) == "非")
                         {
                             disire[1] = disire[1].Remove(0, 1);
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] -= 0.5;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] -= gene.parameter[59];
                             if (gameData.Name == name)
                             {
-                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].vote -= 0.1 * getAgent(gameData.Name).reliability;
+                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].vote -= gene.parameter[60] * getAgent(name).reliability[getAgentNum(gameData.Name)];
                             }
                             disire[1] = disire[1].Remove(0, 1);
                         }
                         else
                         {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] += 0.5;
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(disire[1].Substring(0, 1))), 5] += gene.parameter[61];
                             if (gameData.Name == name)
                             {
-                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].vote += 0.1 * getAgent(gameData.Name).reliability;
+                                mentalAgentList[getAgentNum(Abbreviation(disire[1].Substring(0, 1)))].vote += gene.parameter[62] * getAgent(name).reliability[getAgentNum(gameData.Name)];
                             }
                             disire[1] = disire[1].Remove(0, 1);
                         }
@@ -1104,31 +1134,29 @@ namespace WerewolfVillage
                             if(confirm[3] == "人間")
                             {
                                 getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(confirm[2])), 5] 
-                                    -= 1.0 * getAgent(Abbreviation(confirm[1])).reliability * (1 / (double)num_roleCO[1]);
+                                    -= 1.0  * (1 / (double)num_roleCO[1]);
                             }
                             else if(confirm[3] == "人狼")
                             {
                                 getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(confirm[2])), 5]
-                                    += 1.0 * getAgent(Abbreviation(confirm[1])).reliability * (1 / (double)num_roleCO[1]);
+                                    += 1.0 * (1 / (double)num_roleCO[1]);
                             }
                             break;
                         case "霊能確認":
                             if (confirm[3] == "人間")
                             {
                                 getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(confirm[2])), 5]
-                                    -= 1.0 * getAgent(Abbreviation(confirm[1])).reliability * (1 / (double)num_roleCO[2]);
+                                    -= 1.0 * (1 / (double)num_roleCO[2]);
                             }
                             else if (confirm[3] == "人狼")
                             {
                                 getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(confirm[2])), 5]
-                                    += 1.0 * getAgent(Abbreviation(confirm[1])).reliability * (1 / (double)num_roleCO[2]);
+                                    += 1.0 * (1 / (double)num_roleCO[2]);
                             }
                             break;
-                        case "吊り先確認":
-                            getAgent(Abbreviation(confirm[1])).vote += 0.5;
-                            break;
-                        case "占い先確認":
-                            getAgent(Abbreviation(confirm[1])).fortune += 0.5;
+                        case "護衛確認":
+                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(confirm[1])), 5]
+                                -= 1.0 * (1 / (double)num_roleCO[3]);
                             break;
                         default:
                             break;
@@ -1148,13 +1176,16 @@ namespace WerewolfVillage
             foreach(string value in values)
             {
                 string[] vs = value.Split(':');
-                if(vs[1] == "信頼度高")
+                if (gameData.Name != name)
                 {
-                    getAgent(Abbreviation(vs[0])).reliability += 0.5;
-                }
-                else if(vs[1] == "信頼度低")
-                {
-                    getAgent(Abbreviation(vs[0])).reliability -= 0.5;
+                    if (vs[1] == "信頼度高")
+                    {
+                        getAgent(gameData.Name).reliability[getAgentNum(Abbreviation(vs[0]))] += gene.parameter[61];
+                    }
+                    else if (vs[1] == "信頼度低")
+                    {
+                        getAgent(gameData.Name).reliability[getAgentNum(Abbreviation(vs[0]))] -= gene.parameter[62];
+                    }
                 }
             }
         }
@@ -1170,41 +1201,40 @@ namespace WerewolfVillage
             string[] values = gameData.Line.Split(' ');
             foreach(string value in values)
             {
-                string[] vs = value.Split(':');
-                if (vs[0].Contains("非"))
+                if(value != "")
                 {
-                    if (vs[1].Length == 2)
+                    string[] vs = value.Split(':');
+                    if (vs[0].Contains("非"))
                     {
-                        if (getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
-                            > getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5])
+                        if (vs[1].Length == 2)
                         {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5]
-                                -= getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5] * 0.2;
+                            if (getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
+                                > getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5])
+                            {
+                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5] -= gene.parameter[64];
+                            }
+                            else
+                            {
+                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5] -= gene.parameter[64];
+                            }
                         }
-                        else
-                        {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
-                                -= getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5] * 0.2;
-                        }
+
+
                     }
-                    
-
-                }
-                else
-                {
-                    if (vs[1].Length != 2)
+                    else
                     {
-                        if (getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
-                            > getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5])
+                        if (vs[1].Length == 2)
                         {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5]
-                                += getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5] * 0.2;
-                        }
-                        else
-                        {
-                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
-                                += getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5] * 0.2;
+                            if (getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5]
+                                > getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5])
+                            {
+                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(1))), 5] += gene.parameter[63];
+                            }
+                            else
+                            {
+                                getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(vs[1].Substring(0, 1))), 5] += gene.parameter[63];
 
+                            }
                         }
                     }
                 }
@@ -1372,9 +1402,9 @@ namespace WerewolfVillage
             foreach (string value in values)
             {
                 string[] partnerCO = value.Split(':');
-                if(value.Contains("人狼CO"))
+                if(value.Contains("人狼CO") && !wolfPlayer.Contains(Abbreviation(partnerCO[0])))
                 {
-                    while (wolfPlayer[i] != null)
+                    while (wolfPlayer[i] != null && i < wolfPlayer.Length)
                     {
                         i++;
                     }
@@ -1403,7 +1433,7 @@ namespace WerewolfVillage
                 }
                 if (Abbreviation(vs[0]) == name)
                 {
-                    myRole = stringToRole(vs[1]);
+                    probaCO[(int)stringToRole(vs[1])] += gene.parameter[65];
                 }
             }
         }
@@ -1418,7 +1448,7 @@ namespace WerewolfVillage
             foreach (string value in values)
             {
                 string[] vs = value.Split(':');
-                mentalAgentList[getAgentNum(Abbreviation(vs[1]))].raid += 1.0;
+                mentalAgentList[getAgentNum(Abbreviation(vs[1]))].raid += gene.parameter[66];
                 for (int i = 0; i < wolfPlayer.Length; i++)
                 {
                     if (Abbreviation(gameData.Name) == wolfPlayer[i])
@@ -1439,14 +1469,15 @@ namespace WerewolfVillage
         {
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                mentalAgentList[i].vote += mentalAgentList[getAgentNum(name)].oppositeTable.table[i, 5] * 0.5;
-                mentalAgentList[i].vote += mentalAgentList[getAgentNum(name)].oppositeTable.table[i, 4] * 0.1;
+                mentalAgentList[i].vote += mentalAgentList[getAgentNum(name)].oppositeTable.table[i, 5] * gene.parameter[67];
+                mentalAgentList[i].vote += mentalAgentList[getAgentNum(name)].oppositeTable.table[i, 4] * gene.parameter[68];
             }
         }
         
         /// <summary>
         /// 自分の役職を正しく認識している
         /// 自分の対応表において、自分の役職を１、他を０
+        /// 自分自身への信頼度を１
         /// </summary>
         /// <param name="mentalAgent"></param>
         public void checkMyRole()
@@ -1486,6 +1517,7 @@ namespace WerewolfVillage
                     }
                 }
             }
+            getAgent(name).reliability[getAgentNum(name)] = 1;
         }
 
         /// <summary>
@@ -1517,42 +1549,42 @@ namespace WerewolfVillage
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 0] += 0.1;
+                    table[i, 0] += gene.parameter[71];
                 }
             }
             if (Form1.num_villager - notRole[1] < 1)
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 1] += 0.1;
+                    table[i, 1] += gene.parameter[71];
                 }
             }
             if (Form1.num_villager - notRole[2] < 1)
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 2] += 0.1;
+                    table[i, 2] += gene.parameter[71];
                 }
             }
             if (Form1.num_villager - notRole[3] < 1)
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 3] += 0.1;
+                    table[i, 3] += gene.parameter[71];
                 }
             }
             if (Form1.num_villager - notRole[4] < 1)
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 4] += 0.1;
+                    table[i, 4] += gene.parameter[71];
                 }
             }
             if (Form1.num_villager - notRole[5] < 3)
             {
                 for (int i = 0; i < Form1.num_villager; i++)
                 {
-                    table[i, 5] += 0.1;
+                    table[i, 5] += gene.parameter[71];
                 }
             }
             if (numRole[0] > 7)
@@ -1561,7 +1593,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 0] == 1)
                     {
-                        table[i, 0] -= 0.1;
+                        table[i, 0] -= gene.parameter[72];
                     }
                 }
             }
@@ -1571,7 +1603,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 1] == 1)
                     {
-                        table[i, 1] -= 0.1;
+                        table[i, 1] -= gene.parameter[72];
                     }
                 }
             }
@@ -1581,7 +1613,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 2] == 1)
                     {
-                        table[i, 2] -= 0.1;
+                        table[i, 2] -= gene.parameter[72];
                     }
                 }
             }
@@ -1591,7 +1623,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 3] == 1)
                     {
-                        table[i, 3] -= 0.1;
+                        table[i, 3] -= gene.parameter[72];
                     }
                 }
             }
@@ -1601,7 +1633,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 4] == 1)
                     {
-                        table[i, 4] -= 0.1;
+                        table[i, 4] -= gene.parameter[72];
                     }
                 }
             }
@@ -1611,7 +1643,7 @@ namespace WerewolfVillage
                 {
                     if (table[i, 5] == 1)
                     {
-                        table[i, 5] -= 0.1;
+                        table[i, 5] -= gene.parameter[72];
                     }
                 }
             }
@@ -1643,7 +1675,7 @@ namespace WerewolfVillage
                 {
                     if (mentalAgentList[i].alive && mentalAgentList[0].oppositeTable.table[i, 5] == 1)
                     {
-                        mentalAgentList[0].oppositeTable.table[i, 5] -= 0.1;
+                        mentalAgentList[0].oppositeTable.table[i, 5] -= gene.parameter[73];
                     }
                 }
             }
@@ -1660,7 +1692,10 @@ namespace WerewolfVillage
                 {
                     if(mentalAgentList[i].coRole[j] && mentalAgentList[i].notCoRole[j]) //同じ役職をCO＆非COした
                     {
-                        mentalAgentList[i].reliability -= 0.5;
+                        for(int k = 0; k < Form1.num_villager; k++)
+                        {
+                            mentalAgentList[k].reliability[i] -= gene.parameter[74];
+                        }
                     }
                 }
 
@@ -1668,51 +1703,100 @@ namespace WerewolfVillage
                     || mentalAgentList[i].coRole[1] && mentalAgentList[i].coRole[3]
                     || mentalAgentList[i].coRole[2] && mentalAgentList[i].coRole[3])   //占い師、霊能者、狩人のうち2つ以上をした
                 {
-                    mentalAgentList[i].reliability -= 0.5;
-                }
-            }
-        }
-
-        
-        /// <summary>
-        /// 占い師の占い結果が偽と判明したとき、その占い師は偽物
-        /// 偽物とわかった占い師の信頼度を0
-        /// </summary>
-        public void seerpsychicReliability(Result_psychic result_Psychic)
-        {
-            for (int i = 0; i < fortuneList.Count; i++)
-            {
-                //占い結果と霊能結果が異なるとき、占い師と霊能者の人狼値、狂人値を少し上げる。
-                if (result_Psychic.name_target == fortuneList[i].name_target && result_Psychic.isHuman != fortuneList[i].isHuman)
-                {
-                    for (int j = 0; j < Form1.num_villager; j++)
+                    for (int k = 0; k < Form1.num_villager; k++)
                     {
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(result_Psychic.name_psychic), 4] += 0.1;
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(result_Psychic.name_psychic), 5] += 0.1;
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 4] += 0.1;
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 5] += 0.1;
+                        mentalAgentList[k].reliability[i] -= gene.parameter[74];
                     }
                 }
             }
         }
 
         /// <summary>
+        /// //占い師が4人以上を人狼判定したとき、その占い師は偽物
         /// 占い師の占い結果が偽と判明したとき、その占い師は偽物
-        /// 偽物とわかった占い師の信頼度を0
+        /// 偽物と判明した占い師の信頼度を下げる。
+        /// </summary>
+        public void seerParadox()
+        {
+            int wolfnum = 0;
+            for (int i = 0; i < fortuneList.Count; i++)
+            {
+                if (fortuneList[i].isHuman == false)    //占い師が4人以上を人狼判定したとき、その占い師は偽物
+                {
+                    wolfnum++;
+                }
+
+                if (wolfnum <= 4)
+                {
+                    for (int j = 0; j < Form1.num_villager; j++)
+                    {
+                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 1] -= gene.parameter[75];
+                        mentalAgentList[j].reliability[getAgentNum(fortuneList[i].name_seer)] -= gene.parameter[76];
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// /占い結果と霊能結果が異なるとき、占い師と霊能者の役職値を下げる。
+        /// </summary>
+        public void seerpsychicReliability(Result_psychic result_Psychic)
+        {
+            for (int i = 0; i < fortuneList.Count; i++)
+            {
+                //占い結果と霊能結果が異なるとき、占い師と霊能者の役職値を下げる。
+                if (result_Psychic.name_target == fortuneList[i].name_target && result_Psychic.isHuman != fortuneList[i].isHuman)
+                {
+                    for (int j = 0; j < Form1.num_villager; j++)
+                    {
+                        mentalAgentList[j].oppositeTable.table[getAgentNum(result_Psychic.name_psychic), 3] -= gene.parameter[75];
+                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 2] -= gene.parameter[76];
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 占い結果が人狼の人が襲撃されたとき、占い師の役職値、信頼度を下げる
+        /// 占い師の占い結果が偽と判明したとき、その占い師は偽物
+        /// 偽物とわかった占い師の信頼度を下げる
         /// </summary>
         public void seerReliability(string agent_name)
         {
             for (int i = 0; i < fortuneList.Count; i++)
             {
-                //占い結果が人狼の人が襲撃されたとき、占い師の役職値、信頼度を下げ、人狼値、狂人値を上げる
+                //占い結果が人狼の人が襲撃されたとき、占い師の役職値、信頼度を下げる
                 if (fortuneList[i].name_target == agent_name && !fortuneList[i].isHuman)
                 {
                     for (int j = 0; j < Form1.num_villager; j++)
                     {
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 1] -= 0.5;
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 4] += 0.5;
-                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 5] += 0.5;
-                        getAgent(fortuneList[i].name_seer).reliability -= 0.5;
+                        mentalAgentList[j].oppositeTable.table[getAgentNum(fortuneList[i].name_seer), 1] -= gene.parameter[75];
+                        mentalAgentList[j].reliability[getAgentNum(fortuneList[i].name_seer)] -= gene.parameter[76];
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 霊能者の霊能結果が偽と判明したとき、その霊能者は偽物
+        /// 偽物とわかった霊能者の信頼度を下げる
+        /// </summary>
+        public void psychicParadox()
+        {
+            int wolfnum = 0;
+            for(int i = 0; i < psychicList.Count; i++)
+            {
+                if (psychicList[i].isHuman == false)
+                {
+                    wolfnum++;
+                }
+
+                if(wolfnum <= 3)    //3人以上の霊能結果が人狼のとき、その霊能者は偽者
+                {
+                    for (int j = 0; j < Form1.num_villager; j++)
+                    {
+                        mentalAgentList[j].oppositeTable.table[getAgentNum(psychicList[i].name_psychic), 1] -= gene.parameter[77];
+                        mentalAgentList[j].reliability[getAgentNum(psychicList[i].name_psychic)] -= gene.parameter[78];
                     }
                 }
             }
@@ -1743,11 +1827,11 @@ namespace WerewolfVillage
                 {
                     if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 4] != 0)
                     {
-                        getAgent(name).oppositeTable.table[i, 4] += 0.1;
+                        getAgent(name).oppositeTable.table[i, 4] += gene.parameter[80];
                     }
                     if (!mentalAgentList[i].alive && getAgent(name).oppositeTable.table[i, 5] != 0)
                     {
-                        getAgent(name).oppositeTable.table[i, 5] += 0.1;
+                        getAgent(name).oppositeTable.table[i, 5] += gene.parameter[80];
                     }
                 }
             }
@@ -1768,8 +1852,11 @@ namespace WerewolfVillage
                     {
                         if (mentalAgentList[i].alive && mentalAgentList[i].coRole[1])
                         {
-                            mentalAgentList[getAgentNum(data.Guess)].reliability += 0.5;
-                            mentalAgentList[i].reliability -= 0.5;
+                            for(int k = 0; k < Form1.num_villager; k++)
+                            {
+                                mentalAgentList[k].reliability[getAgentNum(data.Guess)] += gene.parameter[81];
+                                mentalAgentList[k].reliability[i] -= gene.parameter[82];
+                            }
                         }
                     }
                 }
@@ -1779,8 +1866,11 @@ namespace WerewolfVillage
                     {
                         if (mentalAgentList[i].alive && mentalAgentList[i].coRole[2])
                         {
-                            mentalAgentList[getAgentNum(data.Guess)].reliability += 0.5;
-                            mentalAgentList[i].reliability -= 0.5;
+                            for (int k = 0; k < Form1.num_villager; k++)
+                            {
+                                mentalAgentList[k].reliability[getAgentNum(data.Guess)] += gene.parameter[81];
+                                mentalAgentList[k].reliability[i] -= gene.parameter[82];
+                            }
                         }
                     }
                 }
@@ -1790,8 +1880,11 @@ namespace WerewolfVillage
                     {
                         if (mentalAgentList[i].alive && mentalAgentList[i].coRole[3])
                         {
-                            mentalAgentList[getAgentNum(data.Guess)].reliability += 0.5;
-                            mentalAgentList[i].reliability -= 0.5;
+                            for (int k = 0; k < Form1.num_villager; k++)
+                            {
+                                mentalAgentList[k].reliability[getAgentNum(data.Guess)] += gene.parameter[81];
+                                mentalAgentList[k].reliability[i] -= gene.parameter[82];
+                            }
                         }
                     }
                 }
@@ -1875,7 +1968,6 @@ namespace WerewolfVillage
             }
         }
 
-
         /// <summary>
         /// 人狼値（狂人値）の高いプレイヤの信頼度を下げる
         /// 人狼値の低いプレイヤの信頼度を上げる
@@ -1884,13 +1976,10 @@ namespace WerewolfVillage
         {
             for(int i = 0; i < Form1.num_villager; i++)
             {
-                if(getAgent(name).oppositeTable.table[i, 5] > 0.8 || getAgent(name).oppositeTable.table[i, 4] > 0.8)
+                for(int k = 0; k < Form1.num_villager; k++)
                 {
-                    mentalAgentList[i].reliability -= 0.3;
-                }
-                else if(getAgent(name).oppositeTable.table[i, 5] + getAgent(name).oppositeTable.table[i, 4] < 0.2)
-                {
-                    mentalAgentList[i].reliability += 0.3;
+                    mentalAgentList[i].reliability[k] += (0.067 - getAgent(name).oppositeTable.table[i, 4]) * gene.parameter[70];
+                    mentalAgentList[i].reliability[k] += (0.200 - getAgent(name).oppositeTable.table[i, 5]) * gene.parameter[69];
                 }
             }
         }
@@ -1898,11 +1987,9 @@ namespace WerewolfVillage
         /// <summary>
         /// 占い意思
         /// 自分自身、およびすでに占った人は占わない
-        /// 
         /// </summary>
         public void intention_fortune()
         {
-            double graypoint = 0;
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if(mentalAgentList[i].agent.name == name)
@@ -1912,17 +1999,6 @@ namespace WerewolfVillage
                 else if (isFortuned(mentalAgentList[i].agent.name))
                 {
                     mentalAgentList[i].fortune = 0;
-                }
-                else
-                {
-                    graypoint = Math.Abs(getAgent(name).oppositeTable.table[i, 0] - 0.533)
-                               + Math.Abs(getAgent(name).oppositeTable.table[i, 1] - 0.067)
-                               + Math.Abs(getAgent(name).oppositeTable.table[i, 2] - 0.067)
-                               + Math.Abs(getAgent(name).oppositeTable.table[i, 3] - 0.067)
-                               + Math.Abs(getAgent(name).oppositeTable.table[i, 4] - 0.067)
-                               + Math.Abs(getAgent(name).oppositeTable.table[i, 5] - 0.200);
-
-                    mentalAgentList[i].fortune += (1 / graypoint);
                 }
             }
         }
@@ -1938,10 +2014,10 @@ namespace WerewolfVillage
             {
                 if(mentalAgentList[i].coRole[1] || mentalAgentList[i].coRole[2])
                 {
-                    mentalAgentList[i].bodyguard += 0.5;
+                    mentalAgentList[i].bodyguard += gene.parameter[83];
                 }
 
-                mentalAgentList[i].bodyguard += 1.0 - (getAgent(name).oppositeTable.table[i, 4] + getAgent(name).oppositeTable.table[i, 5]);
+                mentalAgentList[i].bodyguard += gene.parameter[84] - (getAgent(name).oppositeTable.table[i, 4] + getAgent(name).oppositeTable.table[i, 5]);
             }
         }
 
@@ -1958,22 +2034,22 @@ namespace WerewolfVillage
                     && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
                     && mentalAgentList[i].alive)
                 {
-                    mentalAgentList[i].raid += 5.0 / num_roleCO[3];
+                    mentalAgentList[i].raid += gene.parameter[87] / num_roleCO[3];
                 }
                 else if ((mentalAgentList[i].coRole[1])
                     && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
                     && mentalAgentList[i].alive)
                 {
-                    mentalAgentList[i].raid += 1.0 / num_roleCO[1];
+                    mentalAgentList[i].raid += gene.parameter[85] / num_roleCO[1];
                 }
                 else if ((mentalAgentList[i].coRole[2])
                     && !(wolfPlayer.Contains(mentalAgentList[i].agent.name))
                     && mentalAgentList[i].alive)
                 {
-                    mentalAgentList[i].raid += 1.0 / num_roleCO[2];
+                    mentalAgentList[i].raid += gene.parameter[86] / num_roleCO[2];
                 }
 
-                mentalAgentList[i].raid += 1.0 - (myTable.table[i, 4] + myTable.table[i, 5]);
+                mentalAgentList[i].raid += gene.parameter[84] - (myTable.table[i, 4] + myTable.table[i, 5]);
 
             }
         }
@@ -2002,11 +2078,11 @@ namespace WerewolfVillage
                     int seed = Environment.TickCount;
                     Random rnd = new Random(seed++);
                     int rndvalue = rnd.Next(0, 1000);
-                    if (rndvalue < 400)
+                    if (rndvalue < gene.parameter[4] * 1000)
                     {
                         gameData.Guess += Complement(wolfPlayer[rnd.Next(0,2)]) + ":霊能者 ";
                     }
-                    else if (rndvalue < 600)
+                    else if (rndvalue < (gene.parameter[4] + gene.parameter[5]) * 1000)
                     {
                         gameData.Guess += Complement(wolfPlayer[rnd.Next(0, 2)]) + ":占い師 ";
                     }
@@ -2146,6 +2222,11 @@ namespace WerewolfVillage
                 isSendEstimate = true;
                 return utteranceEstimate(gameData);
             }
+            else if (!isSendLine && checkUtterLine())
+            {
+                isSendLine = true;
+                return utteranceLine(gameData);
+            }
             else
             {
                 return utteranceOver(gameData);
@@ -2203,7 +2284,7 @@ namespace WerewolfVillage
             int seed = Environment.TickCount;
             Random rnd = new Random(seed++);
             int rndvalue = rnd.Next(0, 1000);
-            if (rndvalue < 600)
+            if (rndvalue < gene.parameter[2] * 1000)
             {
                 myRole = Role.占い師;
                 gameData.Name = name;
@@ -2211,7 +2292,7 @@ namespace WerewolfVillage
                 gameData.Tag += "CO ";
                 gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非霊能者CO ";
             }
-            else if(rndvalue < 900)
+            else if(rndvalue < ( gene.parameter[2] + gene.parameter[3]) * 1000)
             {
                 myRole = Role.霊能者;
                 gameData.Name = name;
@@ -2236,15 +2317,20 @@ namespace WerewolfVillage
         /// <returns></returns>
         public GameData wolfCO(GameData gameData)
         {
-            if(myRole　== Role.占い師)
+            int seed = Environment.TickCount;
+            Random rnd = new Random(seed++);
+            int rndvalue = rnd.Next(0, 1000);
+            if (rndvalue < (gene.parameter[0] + probaCO[1]) * 1000)
             {
+                myRole = Role.占い師;
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
                 gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非占い師CO ";
             }
-            else if(myRole == Role.霊能者)
+            else if(rndvalue < (gene.parameter[0] + gene.parameter[1] + probaCO[2]) * 1000)
             {
+                myRole = Role.霊能者;
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
@@ -2252,6 +2338,7 @@ namespace WerewolfVillage
             }
             else
             {
+                myRole = Role.村人;
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
@@ -2316,7 +2403,7 @@ namespace WerewolfVillage
             }
             else
             {
-                if(rnd.Next(0,1000) < 300)
+                if(rnd.Next(0,1000) < gene.parameter[6] * 1000)
                 {
                     gameData.Guess = Complement(target) + ":人狼";
                 }
@@ -2346,7 +2433,7 @@ namespace WerewolfVillage
             }
             else
             {
-                if (rnd.Next(0, 1000) < 300)
+                if (rnd.Next(0, 1000) < gene.parameter[7] * 1000)
                 {
                     gameData.Guess = Complement(target) + ":人狼";
                 }
@@ -2418,59 +2505,141 @@ namespace WerewolfVillage
 
             for (int i = 0; i < Form1.num_villager; i++)
             {
-                if (mentalAgentList[i].agent.name == name && (getAgent(name).agent.role == Role.人狼 || getAgent(name).agent.role == Role.狂人))
+                if(mentalAgentList[i].agent.name != name)
                 {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + myRole + " ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 0] > 0.8)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 0] > 0.5)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人寄り ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 1] > 0.8)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 1] > 0.5)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師寄り ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 2] > 0.8)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 2] > 0.5)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者寄り ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 3] > 0.8)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 3] > 0.5)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人寄り ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 4] > 0.8)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 4] > 0.5)
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人寄り ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 5] > 0.8 && !(wolfPlayer.Contains(mentalAgentList[i].agent.name)))
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼 ";
-                }
-                else if (getAgent(name).oppositeTable.table[i, 5] > 0.5 && !(wolfPlayer.Contains(mentalAgentList[i].agent.name)))
-                {
-                    gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼寄り ";
+                    if (mentalAgentList[i].agent.name == name && (getAgent(name).agent.role == Role.人狼 || getAgent(name).agent.role == Role.狂人))
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + myRole + " ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 0] > gene.parameter[8])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 0] > gene.parameter[9])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "村人寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 0] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非村人 ";
+                    }
+
+                    if (getAgent(name).oppositeTable.table[i, 1] > gene.parameter[8])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 1] > gene.parameter[9])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "占い師寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 1] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非占い師 ";
+                    }
+
+                    if (getAgent(name).oppositeTable.table[i, 2] > gene.parameter[8])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 2] > gene.parameter[9])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 2] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非霊能者 ";
+                    }
+
+                    if (getAgent(name).oppositeTable.table[i, 3] > gene.parameter[8])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 3] > gene.parameter[9])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 3] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非狩人 ";
+                    }
+
+
+                    if (getAgent(name).oppositeTable.table[i, 4] > gene.parameter[8])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 4] > gene.parameter[9])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狂人寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 4] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非狂人 ";
+                    }
+
+                    if (getAgent(name).oppositeTable.table[i, 5] > gene.parameter[8] && !(wolfPlayer.Contains(mentalAgentList[i].agent.name)))
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼 ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 5] > gene.parameter[9] && !(wolfPlayer.Contains(mentalAgentList[i].agent.name)))
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "人狼寄り ";
+                    }
+                    else if (getAgent(name).oppositeTable.table[i, 5] < gene.parameter[10])
+                    {
+                        gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非人狼 ";
+                    }
                 }
             }
+            return gameData;
+        }
+
+        /// <summary>
+        /// ライン発言をするかどうかの確認
+        /// 人狼値が高いプレイヤが2人以上いると、ライン発言を行う。
+        /// </summary>
+        /// <returns></returns>
+        public bool checkUtterLine()
+        {
+            bool checkLine = false;
+            int high_wolfvalue = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                if (getAgent(name).oppositeTable.table[i, 5] > gene.parameter[11])
+                {
+                    high_wolfvalue++;
+                }
+            }
+
+            if (high_wolfvalue == 2)
+            {
+                checkLine = true;
+            }
+
+            return checkLine;
+        }
+
+        /// <summary>
+        /// ラインの発言
+        /// </summary>
+        /// <param name="gameData"></param>
+        /// <returns></returns>
+        public GameData utteranceLine(GameData gameData)
+        {
+            gameData.Name = name;
+            gameData.Public = "白";
+            gameData.Tag += "ライン ";
+            gameData.Line += "ライン:";
+
+            for(int i = 0; i < Form1.num_villager; i++)
+            {
+                if (getAgent(name).oppositeTable.table[i, 5] > gene.parameter[11])
+                {
+                    gameData.Line += Complement(mentalAgentList[i].agent.name);
+                }
+            }
+            gameData.Line += " ";
+
             return gameData;
         }
 
@@ -2660,6 +2829,82 @@ namespace WerewolfVillage
 
             return raidTarget[rnd.Next(0, raidTarget.Count - 1)];
         } 
+
+        /// <summary>
+        /// 投票意思の総和は１
+        /// </summary>
+        public void checkVote()
+        {
+            double total = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                total += mentalAgentList[i].vote;
+            }
+
+            if (total == 0) total = 1;
+
+            for (int k = 0; k < Form1.num_villager; k++)
+            {
+                mentalAgentList[k].vote = Math.Round(mentalAgentList[k].vote / total, 3, MidpointRounding.AwayFromZero);
+            }
+        }
+
+        /// <summary>
+        /// 占い意思の総和は１
+        /// </summary>
+        public void checkFortune()
+        {
+            double total = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                total += mentalAgentList[i].fortune;
+            }
+
+            if (total == 0) total = 1;
+
+            for (int k = 0; k < Form1.num_villager; k++)
+            {
+                mentalAgentList[k].fortune = Math.Round(mentalAgentList[k].fortune / total, 3, MidpointRounding.AwayFromZero);
+            }
+        }
+
+        /// <summary>
+        /// 護衛意思の総和は１
+        /// </summary>
+        public void checkBodyGuard()
+        {
+            double total = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                total += mentalAgentList[i].bodyguard;
+            }
+
+            if (total == 0) total = 1;
+
+            for (int k = 0; k < Form1.num_villager; k++)
+            {
+                mentalAgentList[k].bodyguard = Math.Round(mentalAgentList[k].bodyguard / total, 3, MidpointRounding.AwayFromZero);
+            }
+        }
+
+        /// <summary>
+        /// 襲撃意思の総和は１
+        /// </summary>
+        public void checkRaid()
+        {
+            double total = 0;
+            for (int i = 0; i < Form1.num_villager; i++)
+            {
+                total += mentalAgentList[i].raid;
+            }
+
+            if (total == 0) total = 1;
+
+            for (int k = 0; k < Form1.num_villager; k++)
+            {
+                mentalAgentList[k].raid = Math.Round(mentalAgentList[k].raid / total, 3, MidpointRounding.AwayFromZero);
+            }
+        }
 
 
         /// <summary>

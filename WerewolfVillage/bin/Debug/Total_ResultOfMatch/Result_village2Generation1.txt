@@ -1,0 +1,105 @@
+PlayerNumber = 0
+num_game : 20
+num_win : 14
+num_rolePlay : 8, 1, 2, 1, 1, 7, 
+num_roleWin : 5, 0, 0, 1, 1, 7, 
+point : 70
+
+PlayerNumber = 1
+num_game : 30
+num_win : 17
+num_rolePlay : 13, 4, 0, 1, 2, 10, 
+num_roleWin : 6, 0, 0, 0, 2, 9, 
+point : 132
+
+PlayerNumber = 2
+num_game : 20
+num_win : 8
+num_rolePlay : 9, 3, 2, 2, 2, 2, 
+num_roleWin : 2, 1, 2, 0, 2, 1, 
+point : 42
+
+PlayerNumber = 3
+num_game : 20
+num_win : 10
+num_rolePlay : 8, 2, 1, 1, 1, 7, 
+num_roleWin : 2, 1, 1, 0, 1, 5, 
+point : 66
+
+PlayerNumber = 4
+num_game : 20
+num_win : 7
+num_rolePlay : 9, 2, 3, 1, 0, 5, 
+num_roleWin : 2, 1, 1, 0, 0, 3, 
+point : 34
+
+PlayerNumber = 5
+num_game : 30
+num_win : 12
+num_rolePlay : 17, 0, 1, 2, 4, 6, 
+num_roleWin : 4, 0, 0, 1, 2, 5, 
+point : 79
+
+PlayerNumber = 6
+num_game : 10
+num_win : 3
+num_rolePlay : 6, 1, 0, 1, 0, 2, 
+num_roleWin : 1, 0, 0, 0, 0, 2, 
+point : 43
+
+PlayerNumber = 7
+num_game : 10
+num_win : 4
+num_rolePlay : 4, 0, 1, 0, 3, 2, 
+num_roleWin : 0, 0, 0, 0, 2, 2, 
+point : 68
+
+PlayerNumber = 8
+num_game : 30
+num_win : 17
+num_rolePlay : 13, 4, 0, 1, 2, 10, 
+num_roleWin : 6, 0, 0, 0, 2, 9, 
+point : 132
+
+PlayerNumber = 9
+num_game : 20
+num_win : 9
+num_rolePlay : 13, 0, 1, 0, 1, 5, 
+num_roleWin : 4, 0, 0, 0, 1, 4, 
+point : 5
+
+PlayerNumber = 10
+num_game : 10
+num_win : 2
+num_rolePlay : 5, 1, 1, 2, 1, 0, 
+num_roleWin : 0, 1, 0, 0, 1, 0, 
+point : 29
+
+PlayerNumber = 11
+num_game : 20
+num_win : 7
+num_rolePlay : 13, 2, 1, 1, 1, 2, 
+num_roleWin : 3, 1, 0, 0, 1, 2, 
+point : 31
+
+PlayerNumber = 12
+num_game : 30
+num_win : 13
+num_rolePlay : 12, 4, 3, 3, 1, 7, 
+num_roleWin : 3, 3, 0, 1, 0, 6, 
+point : 105
+
+PlayerNumber = 13
+num_game : 30
+num_win : 13
+num_rolePlay : 15, 1, 1, 2, 1, 10, 
+num_roleWin : 5, 0, 0, 0, 0, 8, 
+point : 92
+
+PlayerNumber = 14
+num_game : 20
+num_win : 10
+num_rolePlay : 12, 2, 1, 0, 2, 3, 
+num_roleWin : 4, 1, 0, 0, 2, 3, 
+point : 57
+

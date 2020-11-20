@@ -15,6 +15,9 @@ namespace WerewolfVillage
     {
         public static int num_AutoGame = 1;
         public static int num_villager = 15;
+        public static int oneGenerationGames = 1;   //1世代毎の対戦数
+        public static int villageNumbers = 1;       //同時に生成する村の数
+        public static int generationNumbers = 1;    //世代数
         public static string readFile = null;
         public static string[] AgentName = new string[num_villager];
         public static string[] AgentRole = new string[num_villager];
@@ -156,6 +159,21 @@ namespace WerewolfVillage
         private void AutoGame_ValueChanged(object sender, EventArgs e)
         {
             num_AutoGame = (int)AutoGame.Value;
+        }
+
+        private void GenerationGames_ValueChanged(object sender, EventArgs e)
+        {
+            oneGenerationGames = (int)GenerationGames.Value;
+        }
+
+        private void VillageNum_ValueChanged(object sender, EventArgs e)
+        {
+            villageNumbers = (int)VillageNum.Value;
+        }
+
+        private void GenerationNum_ValueChanged(object sender, EventArgs e)
+        {
+            generationNumbers = (int)GenerationNum.Value;
         }
     }
 }

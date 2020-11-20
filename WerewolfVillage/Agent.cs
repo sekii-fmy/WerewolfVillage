@@ -23,9 +23,17 @@ namespace WerewolfVillage
         public Role role;
         public bool alive;
 
+        public GeneOfParameter parameter;
+        public ResultOfMatch resultMatch;
         public MentalSpace mentalSpace;
 
-        public Agent(string name, string agentRole)
+        public Agent(GeneOfParameter geneParameter, int agentNum)
+        {
+            resultMatch = new ResultOfMatch(agentNum);
+            parameter = geneParameter;
+        }
+
+        public void nextVillage(string name, string agentRole)
         {
             this.name = name;
             alive = true;
@@ -39,8 +47,15 @@ namespace WerewolfVillage
                 }
             }
 
-            mentalSpace = new MentalSpace(this.name);
+            mentalSpace = new MentalSpace(this.name, parameter);
 
+        }
+
+        public void generateMentalSpace (string name)
+        {
+            this.name = name;
+            alive = true;
+            mentalSpace = new MentalSpace(this.name, parameter);
         }
 
         public string getFortune()

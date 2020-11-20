@@ -84,7 +84,16 @@
             this.StartAutoGame = new System.Windows.Forms.Button();
             this.AutoGame = new System.Windows.Forms.NumericUpDown();
             this.label17 = new System.Windows.Forms.Label();
+            this.label18 = new System.Windows.Forms.Label();
+            this.label19 = new System.Windows.Forms.Label();
+            this.label20 = new System.Windows.Forms.Label();
+            this.GenerationGames = new System.Windows.Forms.NumericUpDown();
+            this.VillageNum = new System.Windows.Forms.NumericUpDown();
+            this.GenerationNum = new System.Windows.Forms.NumericUpDown();
             ((System.ComponentModel.ISupportInitialize)(this.AutoGame)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GenerationGames)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VillageNum)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GenerationNum)).BeginInit();
             this.SuspendLayout();
             // 
             // Startbutton
@@ -155,7 +164,7 @@
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(56, 127);
+            this.label2.Location = new System.Drawing.Point(8, 133);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(110, 18);
             this.label2.TabIndex = 8;
@@ -164,7 +173,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(137, 159);
+            this.label3.Location = new System.Drawing.Point(89, 165);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(29, 18);
             this.label3.TabIndex = 9;
@@ -193,7 +202,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName1.Location = new System.Drawing.Point(184, 124);
+            this.AgentName1.Location = new System.Drawing.Point(136, 130);
             this.AgentName1.MaxDropDownItems = 21;
             this.AgentName1.Name = "AgentName1";
             this.AgentName1.Size = new System.Drawing.Size(174, 26);
@@ -211,7 +220,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole1.Location = new System.Drawing.Point(379, 124);
+            this.AgentRole1.Location = new System.Drawing.Point(331, 130);
             this.AgentRole1.MaxDropDownItems = 6;
             this.AgentRole1.Name = "AgentRole1";
             this.AgentRole1.Size = new System.Drawing.Size(99, 26);
@@ -241,7 +250,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName2.Location = new System.Drawing.Point(184, 156);
+            this.AgentName2.Location = new System.Drawing.Point(136, 162);
             this.AgentName2.MaxDropDownItems = 21;
             this.AgentName2.Name = "AgentName2";
             this.AgentName2.Size = new System.Drawing.Size(174, 26);
@@ -271,7 +280,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName3.Location = new System.Drawing.Point(184, 188);
+            this.AgentName3.Location = new System.Drawing.Point(136, 194);
             this.AgentName3.MaxDropDownItems = 21;
             this.AgentName3.Name = "AgentName3";
             this.AgentName3.Size = new System.Drawing.Size(174, 26);
@@ -301,7 +310,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName4.Location = new System.Drawing.Point(184, 220);
+            this.AgentName4.Location = new System.Drawing.Point(136, 226);
             this.AgentName4.MaxDropDownItems = 21;
             this.AgentName4.Name = "AgentName4";
             this.AgentName4.Size = new System.Drawing.Size(174, 26);
@@ -331,7 +340,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName5.Location = new System.Drawing.Point(184, 252);
+            this.AgentName5.Location = new System.Drawing.Point(136, 258);
             this.AgentName5.MaxDropDownItems = 21;
             this.AgentName5.Name = "AgentName5";
             this.AgentName5.Size = new System.Drawing.Size(174, 26);
@@ -361,7 +370,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName6.Location = new System.Drawing.Point(184, 284);
+            this.AgentName6.Location = new System.Drawing.Point(136, 290);
             this.AgentName6.MaxDropDownItems = 21;
             this.AgentName6.Name = "AgentName6";
             this.AgentName6.Size = new System.Drawing.Size(174, 26);
@@ -391,7 +400,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName7.Location = new System.Drawing.Point(184, 316);
+            this.AgentName7.Location = new System.Drawing.Point(136, 322);
             this.AgentName7.MaxDropDownItems = 21;
             this.AgentName7.Name = "AgentName7";
             this.AgentName7.Size = new System.Drawing.Size(174, 26);
@@ -421,7 +430,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName8.Location = new System.Drawing.Point(184, 348);
+            this.AgentName8.Location = new System.Drawing.Point(136, 354);
             this.AgentName8.MaxDropDownItems = 21;
             this.AgentName8.Name = "AgentName8";
             this.AgentName8.Size = new System.Drawing.Size(174, 26);
@@ -451,7 +460,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName9.Location = new System.Drawing.Point(184, 380);
+            this.AgentName9.Location = new System.Drawing.Point(136, 386);
             this.AgentName9.MaxDropDownItems = 21;
             this.AgentName9.Name = "AgentName9";
             this.AgentName9.Size = new System.Drawing.Size(174, 26);
@@ -481,7 +490,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName10.Location = new System.Drawing.Point(184, 412);
+            this.AgentName10.Location = new System.Drawing.Point(136, 418);
             this.AgentName10.MaxDropDownItems = 21;
             this.AgentName10.Name = "AgentName10";
             this.AgentName10.Size = new System.Drawing.Size(174, 26);
@@ -511,7 +520,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName11.Location = new System.Drawing.Point(184, 444);
+            this.AgentName11.Location = new System.Drawing.Point(136, 450);
             this.AgentName11.MaxDropDownItems = 21;
             this.AgentName11.Name = "AgentName11";
             this.AgentName11.Size = new System.Drawing.Size(174, 26);
@@ -541,7 +550,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName12.Location = new System.Drawing.Point(184, 476);
+            this.AgentName12.Location = new System.Drawing.Point(136, 482);
             this.AgentName12.MaxDropDownItems = 21;
             this.AgentName12.Name = "AgentName12";
             this.AgentName12.Size = new System.Drawing.Size(174, 26);
@@ -571,7 +580,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName13.Location = new System.Drawing.Point(184, 508);
+            this.AgentName13.Location = new System.Drawing.Point(136, 514);
             this.AgentName13.MaxDropDownItems = 21;
             this.AgentName13.Name = "AgentName13";
             this.AgentName13.Size = new System.Drawing.Size(174, 26);
@@ -601,7 +610,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName14.Location = new System.Drawing.Point(184, 540);
+            this.AgentName14.Location = new System.Drawing.Point(136, 546);
             this.AgentName14.MaxDropDownItems = 21;
             this.AgentName14.Name = "AgentName14";
             this.AgentName14.Size = new System.Drawing.Size(174, 26);
@@ -631,7 +640,7 @@
             "仕立て屋エルナ",
             "司書クララ",
             "負傷兵シモン"});
-            this.AgentName15.Location = new System.Drawing.Point(184, 572);
+            this.AgentName15.Location = new System.Drawing.Point(136, 578);
             this.AgentName15.MaxDropDownItems = 21;
             this.AgentName15.Name = "AgentName15";
             this.AgentName15.Size = new System.Drawing.Size(174, 26);
@@ -649,7 +658,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole2.Location = new System.Drawing.Point(379, 156);
+            this.AgentRole2.Location = new System.Drawing.Point(331, 162);
             this.AgentRole2.MaxDropDownItems = 6;
             this.AgentRole2.Name = "AgentRole2";
             this.AgentRole2.Size = new System.Drawing.Size(99, 26);
@@ -666,7 +675,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole3.Location = new System.Drawing.Point(379, 188);
+            this.AgentRole3.Location = new System.Drawing.Point(331, 194);
             this.AgentRole3.MaxDropDownItems = 6;
             this.AgentRole3.Name = "AgentRole3";
             this.AgentRole3.Size = new System.Drawing.Size(99, 26);
@@ -683,7 +692,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole4.Location = new System.Drawing.Point(379, 220);
+            this.AgentRole4.Location = new System.Drawing.Point(331, 226);
             this.AgentRole4.MaxDropDownItems = 6;
             this.AgentRole4.Name = "AgentRole4";
             this.AgentRole4.Size = new System.Drawing.Size(99, 26);
@@ -700,7 +709,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole5.Location = new System.Drawing.Point(379, 252);
+            this.AgentRole5.Location = new System.Drawing.Point(331, 258);
             this.AgentRole5.MaxDropDownItems = 6;
             this.AgentRole5.Name = "AgentRole5";
             this.AgentRole5.Size = new System.Drawing.Size(99, 26);
@@ -717,7 +726,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole6.Location = new System.Drawing.Point(379, 284);
+            this.AgentRole6.Location = new System.Drawing.Point(331, 290);
             this.AgentRole6.MaxDropDownItems = 6;
             this.AgentRole6.Name = "AgentRole6";
             this.AgentRole6.Size = new System.Drawing.Size(99, 26);
@@ -734,7 +743,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole7.Location = new System.Drawing.Point(379, 316);
+            this.AgentRole7.Location = new System.Drawing.Point(331, 322);
             this.AgentRole7.MaxDropDownItems = 6;
             this.AgentRole7.Name = "AgentRole7";
             this.AgentRole7.Size = new System.Drawing.Size(99, 26);
@@ -751,7 +760,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole8.Location = new System.Drawing.Point(379, 348);
+            this.AgentRole8.Location = new System.Drawing.Point(331, 354);
             this.AgentRole8.MaxDropDownItems = 6;
             this.AgentRole8.Name = "AgentRole8";
             this.AgentRole8.Size = new System.Drawing.Size(99, 26);
@@ -768,7 +777,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole9.Location = new System.Drawing.Point(379, 380);
+            this.AgentRole9.Location = new System.Drawing.Point(331, 386);
             this.AgentRole9.MaxDropDownItems = 6;
             this.AgentRole9.Name = "AgentRole9";
             this.AgentRole9.Size = new System.Drawing.Size(99, 26);
@@ -785,7 +794,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole10.Location = new System.Drawing.Point(379, 412);
+            this.AgentRole10.Location = new System.Drawing.Point(331, 418);
             this.AgentRole10.MaxDropDownItems = 6;
             this.AgentRole10.Name = "AgentRole10";
             this.AgentRole10.Size = new System.Drawing.Size(99, 26);
@@ -802,7 +811,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole11.Location = new System.Drawing.Point(379, 444);
+            this.AgentRole11.Location = new System.Drawing.Point(331, 450);
             this.AgentRole11.MaxDropDownItems = 6;
             this.AgentRole11.Name = "AgentRole11";
             this.AgentRole11.Size = new System.Drawing.Size(99, 26);
@@ -819,7 +828,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole12.Location = new System.Drawing.Point(379, 476);
+            this.AgentRole12.Location = new System.Drawing.Point(331, 482);
             this.AgentRole12.MaxDropDownItems = 6;
             this.AgentRole12.Name = "AgentRole12";
             this.AgentRole12.Size = new System.Drawing.Size(99, 26);
@@ -836,7 +845,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole13.Location = new System.Drawing.Point(379, 508);
+            this.AgentRole13.Location = new System.Drawing.Point(331, 514);
             this.AgentRole13.MaxDropDownItems = 6;
             this.AgentRole13.Name = "AgentRole13";
             this.AgentRole13.Size = new System.Drawing.Size(99, 26);
@@ -853,7 +862,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole14.Location = new System.Drawing.Point(379, 540);
+            this.AgentRole14.Location = new System.Drawing.Point(331, 546);
             this.AgentRole14.MaxDropDownItems = 6;
             this.AgentRole14.Name = "AgentRole14";
             this.AgentRole14.Size = new System.Drawing.Size(99, 26);
@@ -870,7 +879,7 @@
             "狩人",
             "狂人",
             "人狼"});
-            this.AgentRole15.Location = new System.Drawing.Point(379, 572);
+            this.AgentRole15.Location = new System.Drawing.Point(331, 578);
             this.AgentRole15.MaxDropDownItems = 6;
             this.AgentRole15.Name = "AgentRole15";
             this.AgentRole15.Size = new System.Drawing.Size(99, 26);
@@ -880,7 +889,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(137, 191);
+            this.label4.Location = new System.Drawing.Point(89, 197);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(29, 18);
             this.label4.TabIndex = 39;
@@ -889,7 +898,7 @@
             // label5
             // 
             this.label5.AutoSize = true;
-            this.label5.Location = new System.Drawing.Point(137, 223);
+            this.label5.Location = new System.Drawing.Point(89, 229);
             this.label5.Name = "label5";
             this.label5.Size = new System.Drawing.Size(29, 18);
             this.label5.TabIndex = 40;
@@ -898,7 +907,7 @@
             // label6
             // 
             this.label6.AutoSize = true;
-            this.label6.Location = new System.Drawing.Point(137, 255);
+            this.label6.Location = new System.Drawing.Point(89, 261);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(29, 18);
             this.label6.TabIndex = 41;
@@ -907,7 +916,7 @@
             // label7
             // 
             this.label7.AutoSize = true;
-            this.label7.Location = new System.Drawing.Point(137, 287);
+            this.label7.Location = new System.Drawing.Point(89, 293);
             this.label7.Name = "label7";
             this.label7.Size = new System.Drawing.Size(29, 18);
             this.label7.TabIndex = 42;
@@ -916,7 +925,7 @@
             // label8
             // 
             this.label8.AutoSize = true;
-            this.label8.Location = new System.Drawing.Point(137, 319);
+            this.label8.Location = new System.Drawing.Point(89, 325);
             this.label8.Name = "label8";
             this.label8.Size = new System.Drawing.Size(29, 18);
             this.label8.TabIndex = 43;
@@ -925,7 +934,7 @@
             // label9
             // 
             this.label9.AutoSize = true;
-            this.label9.Location = new System.Drawing.Point(137, 351);
+            this.label9.Location = new System.Drawing.Point(89, 357);
             this.label9.Name = "label9";
             this.label9.Size = new System.Drawing.Size(29, 18);
             this.label9.TabIndex = 44;
@@ -934,7 +943,7 @@
             // label10
             // 
             this.label10.AutoSize = true;
-            this.label10.Location = new System.Drawing.Point(137, 383);
+            this.label10.Location = new System.Drawing.Point(89, 389);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(29, 18);
             this.label10.TabIndex = 45;
@@ -943,7 +952,7 @@
             // label11
             // 
             this.label11.AutoSize = true;
-            this.label11.Location = new System.Drawing.Point(125, 415);
+            this.label11.Location = new System.Drawing.Point(77, 421);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(41, 18);
             this.label11.TabIndex = 46;
@@ -952,7 +961,7 @@
             // label12
             // 
             this.label12.AutoSize = true;
-            this.label12.Location = new System.Drawing.Point(125, 447);
+            this.label12.Location = new System.Drawing.Point(77, 453);
             this.label12.Name = "label12";
             this.label12.Size = new System.Drawing.Size(41, 18);
             this.label12.TabIndex = 47;
@@ -961,7 +970,7 @@
             // label13
             // 
             this.label13.AutoSize = true;
-            this.label13.Location = new System.Drawing.Point(125, 479);
+            this.label13.Location = new System.Drawing.Point(77, 485);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(41, 18);
             this.label13.TabIndex = 48;
@@ -970,7 +979,7 @@
             // label14
             // 
             this.label14.AutoSize = true;
-            this.label14.Location = new System.Drawing.Point(125, 511);
+            this.label14.Location = new System.Drawing.Point(77, 517);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(41, 18);
             this.label14.TabIndex = 49;
@@ -979,7 +988,7 @@
             // label15
             // 
             this.label15.AutoSize = true;
-            this.label15.Location = new System.Drawing.Point(125, 543);
+            this.label15.Location = new System.Drawing.Point(77, 549);
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(41, 18);
             this.label15.TabIndex = 50;
@@ -988,7 +997,7 @@
             // label16
             // 
             this.label16.AutoSize = true;
-            this.label16.Location = new System.Drawing.Point(125, 575);
+            this.label16.Location = new System.Drawing.Point(77, 581);
             this.label16.Name = "label16";
             this.label16.Size = new System.Drawing.Size(41, 18);
             this.label16.TabIndex = 51;
@@ -997,7 +1006,7 @@
             // GerdButton
             // 
             this.GerdButton.AutoSize = true;
-            this.GerdButton.Location = new System.Drawing.Point(140, 617);
+            this.GerdButton.Location = new System.Drawing.Point(92, 623);
             this.GerdButton.Name = "GerdButton";
             this.GerdButton.Size = new System.Drawing.Size(184, 22);
             this.GerdButton.TabIndex = 52;
@@ -1027,7 +1036,7 @@
             // 
             // AutoGame
             // 
-            this.AutoGame.Location = new System.Drawing.Point(599, 289);
+            this.AutoGame.Location = new System.Drawing.Point(599, 104);
             this.AutoGame.Maximum = new decimal(new int[] {
             100000,
             0,
@@ -1046,17 +1055,104 @@
             // label17
             // 
             this.label17.AutoSize = true;
-            this.label17.Location = new System.Drawing.Point(521, 291);
+            this.label17.Location = new System.Drawing.Point(521, 106);
             this.label17.Name = "label17";
             this.label17.Size = new System.Drawing.Size(61, 18);
             this.label17.TabIndex = 56;
             this.label17.Text = "Repeat";
+            // 
+            // label18
+            // 
+            this.label18.AutoSize = true;
+            this.label18.Location = new System.Drawing.Point(458, 226);
+            this.label18.Name = "label18";
+            this.label18.Size = new System.Drawing.Size(138, 18);
+            this.label18.TabIndex = 57;
+            this.label18.Text = "世代ごとの対戦数";
+            // 
+            // label19
+            // 
+            this.label19.AutoSize = true;
+            this.label19.Location = new System.Drawing.Point(458, 258);
+            this.label19.Name = "label19";
+            this.label19.Size = new System.Drawing.Size(160, 18);
+            this.label19.TabIndex = 58;
+            this.label19.Text = "同時作成する村の数";
+            // 
+            // label20
+            // 
+            this.label20.AutoSize = true;
+            this.label20.Location = new System.Drawing.Point(458, 290);
+            this.label20.Name = "label20";
+            this.label20.Size = new System.Drawing.Size(62, 18);
+            this.label20.TabIndex = 59;
+            this.label20.Text = "世代数";
+            // 
+            // GenerationGames
+            // 
+            this.GenerationGames.Location = new System.Drawing.Point(629, 222);
+            this.GenerationGames.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.GenerationGames.Name = "GenerationGames";
+            this.GenerationGames.Size = new System.Drawing.Size(103, 25);
+            this.GenerationGames.TabIndex = 60;
+            this.GenerationGames.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.GenerationGames.ValueChanged += new System.EventHandler(this.GenerationGames_ValueChanged);
+            // 
+            // VillageNum
+            // 
+            this.VillageNum.Location = new System.Drawing.Point(629, 258);
+            this.VillageNum.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.VillageNum.Name = "VillageNum";
+            this.VillageNum.Size = new System.Drawing.Size(103, 25);
+            this.VillageNum.TabIndex = 61;
+            this.VillageNum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.VillageNum.ValueChanged += new System.EventHandler(this.VillageNum_ValueChanged);
+            // 
+            // GenerationNum
+            // 
+            this.GenerationNum.Location = new System.Drawing.Point(629, 290);
+            this.GenerationNum.Maximum = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
+            this.GenerationNum.Name = "GenerationNum";
+            this.GenerationNum.Size = new System.Drawing.Size(103, 25);
+            this.GenerationNum.TabIndex = 62;
+            this.GenerationNum.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.GenerationNum.ValueChanged += new System.EventHandler(this.GenerationNum_ValueChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(972, 670);
+            this.Controls.Add(this.GenerationNum);
+            this.Controls.Add(this.VillageNum);
+            this.Controls.Add(this.GenerationGames);
+            this.Controls.Add(this.label20);
+            this.Controls.Add(this.label19);
+            this.Controls.Add(this.label18);
             this.Controls.Add(this.label17);
             this.Controls.Add(this.AutoGame);
             this.Controls.Add(this.StartAutoGame);
@@ -1116,6 +1212,9 @@
             this.Name = "Form1";
             this.Text = "Form1";
             ((System.ComponentModel.ISupportInitialize)(this.AutoGame)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GenerationGames)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.VillageNum)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.GenerationNum)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1179,6 +1278,12 @@
         private System.Windows.Forms.Button StartAutoGame;
         private System.Windows.Forms.NumericUpDown AutoGame;
         private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.Label label18;
+        private System.Windows.Forms.Label label19;
+        private System.Windows.Forms.Label label20;
+        private System.Windows.Forms.NumericUpDown GenerationGames;
+        private System.Windows.Forms.NumericUpDown VillageNum;
+        private System.Windows.Forms.NumericUpDown GenerationNum;
     }
 }
 

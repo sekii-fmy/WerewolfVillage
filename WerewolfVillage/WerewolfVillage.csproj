@@ -55,6 +55,7 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="GeneOfParameter.cs" />
     <Compile Include="MentalAgent.cs" />
     <Compile Include="MentalSpace.cs" />
     <Compile Include="OppositeTable.cs" />

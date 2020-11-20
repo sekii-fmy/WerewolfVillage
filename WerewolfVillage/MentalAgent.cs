@@ -10,8 +10,9 @@ namespace WerewolfVillage
     {
         public Agent agent;
         public bool alive;            //生死    
-        public double reliability;           //信頼度
+        public double[] reliability;           //信頼度
         public OppositeTable oppositeTable;  //対応表
+        public bool progreccer;              //進行役か否か
         public double vote;                  //投票意思,高いプレイヤに投票する
         public double fortune;               //占い意思,高いプレイヤを占う
         public double bodyguard;             //護衛意思,高いプレイヤを護る
@@ -19,15 +20,20 @@ namespace WerewolfVillage
         public bool[] coRole;
         public bool[] notCoRole;
 
-        public MentalAgent(ref List<Agent> newAgent, int i)
+        public MentalAgent(Agent newAgent)
         {
-            agent = newAgent[i];
+            this.agent = newAgent;
             alive = true;
-            reliability = 0.5;
+            reliability = new double[Form1.num_villager];
+            for(int k = 0; k < Form1.num_villager; k++)
+            {
+                reliability[k] = 0.5;
+            }
             vote = 0;
             fortune = 0;
             bodyguard = 0;
             raid = 0;
+            progreccer = false;
             coRole = new bool[6] {false, false, false, false, false, false };
             notCoRole = new bool[6] { false, false, false, false, false, false };
             oppositeTable = new OppositeTable();
@@ -49,13 +55,16 @@ namespace WerewolfVillage
         /// </summary>
         public void checkReliability()
         {
-            if(reliability < 0)
+            for(int i = 0; i < Form1.num_villager; i++)
             {
-                reliability = 0;
-            }
-            else if(reliability > 1)
-            {
-                reliability = 1;
+                if (reliability[i] < 0)
+                {
+                    reliability[i] = 0;
+                }
+                else if (reliability[i] > 1)
+                {
+                    reliability[i] = 1;
+                }
             }
         }
     }

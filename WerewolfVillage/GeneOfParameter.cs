@@ -10,11 +10,13 @@ namespace WerewolfVillage
     {
         public static int length_gene = 88;
         public double[] parameter = new double[length_gene];
-        Random rnd = new Random();
+        static int seed = Environment.TickCount;
+        static Random rnd = new System.Random();
+
 
         public GeneOfParameter()
         {
-            for(int i = 0; i < length_gene; i++)
+            for (int i = 0; i < length_gene; i++)
             {
                 parameter[i] = rnd.NextDouble();
             }

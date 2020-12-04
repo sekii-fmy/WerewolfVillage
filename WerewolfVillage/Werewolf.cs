@@ -34,6 +34,7 @@ namespace WerewolfVillage
             int exchange = 0;
             generateGene();
             generateVillage();
+            printSurvivalAgent(generation);
 
             while (generation < generationNumbers) {
                 for (int i = 0; i < villageNumbers; i++)
@@ -43,11 +44,13 @@ namespace WerewolfVillage
                 generation++;
                 exchange++;
                 selection(generation, exchange);
-                if(exchange <= 10)
+                if(exchange >= 10 && generation < generationNumbers)
                 {
                     exchangeGene();
                     exchange = 0;
                 }
+                printSurvivalAgent(generation);
+
             };
         }
 
@@ -71,8 +74,10 @@ namespace WerewolfVillage
             for (int i = 0; i < villageNumbers; i++)
             {
                 List<Agent> villager = new List<Agent>();
+                GeneOfParameter gene = new GeneOfParameter(); //消す
                 do
                 {
+                    //villager.Add(new Agent(gene, (k % 15)));
                     villager.Add(geneList[k]);
                     k++;
                 } while (k < (i + 1) * 15);
@@ -93,15 +98,15 @@ namespace WerewolfVillage
             {
                 villageList[num] = new Village(villagers[num]);
                 villageList[num].startGame();
-                File.WriteAllText(@"./GameData_Village/Village"+ num + "_GameData" + num_NowGame + "Generation"+ generation +".txt", Form1.writeText);
-                File.WriteAllText(@"./LogText/LogText"+ num + "_" + num_NowGame + "Generation" + generation + ".txt", Form1.printText);
-                File.WriteAllText(@"./ResultVoteText/ResultVoteText" + num + "_" + num_NowGame + "Generation" + generation + ".txt", Form1.resultVoteText);
-                File.WriteAllText(@"./ResultVoteAndRaidText/ResultVoteAndRaidText" + num + "_" + num_NowGame + "Generation" + generation + ".txt", Form1.resultVoteAndRaidText);
+                File.WriteAllText(@"./GameData_Village/GameData_Village"+ num + "_Generation" + generation + "_Game" + num_NowGame + ".txt", Form1.writeText);
+                File.WriteAllText(@"./LogText/Logtext_Village" + num + "_Generation" + generation + "_Game" + num_NowGame + ".txt", Form1.printText);
+                File.WriteAllText(@"./ResultVoteText/ResultVoteText_Village" + num + "_Generation" + generation + "_Game" + num_NowGame + ".txt", Form1.resultVoteText);
+                File.WriteAllText(@"./ResultVoteAndRaidText/ResultVoteAndRaidText_Village" + num + "_Generation" + generation + "_Game" + num_NowGame + ".txt", Form1.resultVoteAndRaidText);
                 Form1.printText = null;
                 Form1.writeText = null;
                 Form1.resultVoteText = null;
                 Form1.resultVoteAndRaidText = null;
-                Console.Write("Village"+ num + "_Game" + num_NowGame + "\r\n");
+                Console.Write("Village" + num + ", Generation" + generation + ", Game" +num_NowGame + "\r\n");
                 num_NowGame++;
             }
             resultsOutput(num, generation);
@@ -117,9 +122,9 @@ namespace WerewolfVillage
                 villageList[i].agentList.Sort((a, b) => b.resultMatch.point - a.resultMatch.point);
                 //スコアでソート
 
-                villageList[i].agentList[7] = villageList[i].agentList[0];      //1位の複製
-                villageList[i].agentList[8] = villageList[i].agentList[1];      //2位の複製
-                villageList[i].agentList[9] = villageList[i].agentList[2];      //3位の複製
+                villageList[i].agentList[7] = copyAgent(villageList[i].agentList[0], villageList[i].agentList[7].resultMatch.playerNum);      //1位の複製
+                villageList[i].agentList[8] = copyAgent(villageList[i].agentList[1], villageList[i].agentList[8].resultMatch.playerNum);      //2位の複製
+                villageList[i].agentList[9] = copyAgent(villageList[i].agentList[2], villageList[i].agentList[9].resultMatch.playerNum);      //3位の複製
 
                 villageList[i].agentList[10] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[10].resultMatch.playerNum);
                 villageList[i].agentList[11] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[11].resultMatch.playerNum);
@@ -144,8 +149,15 @@ namespace WerewolfVillage
                     villageList[i].agentList[m].resultMatch.ResetResult();
                 }
                 //スコアのリセット
-
             }
+        }
+
+        /// <summary>
+        /// 個体の複製
+        /// </summary>
+        public Agent copyAgent(Agent agent, int agentNum)
+        {
+            return new Agent(agent.parameter, agentNum);
         }
 
         /// <summary>
@@ -209,6 +221,7 @@ namespace WerewolfVillage
                     num++;
                 }
             }
+            Console.Write("exchange\r\n");
         }
 
 
@@ -236,12 +249,11 @@ namespace WerewolfVillage
                 str += "\r\n"+"point : " + result.point;
                 str += "\r\n\r\n";
             }
-
             File.WriteAllText(@"./Total_ResultOfMatch/Result_village"+ villageNum + "Generation" + generation +".txt", str);
         }
 
 
-        public void printSurvivalAgent()
+        public void printSurvivalAgent(int generation)
         {
             string str = null;
             for (int i = 0; i < villageNumbers; i++)
@@ -249,16 +261,17 @@ namespace WerewolfVillage
                 str += "village" + i + "\r\n";
                 for (int k = 0; k < Form1.num_villager; k++)
                 {
-                    str += "  Agent" + k + "\r\n";
+                    str += "  Agent" + villageList[i].agentList[k].resultMatch.playerNum + "\r\n";
                     str += "  { ";
 
-                    foreach(double value in villageList[k].agentList[i].parameter.parameter){
+                    foreach(double value in villageList[i].agentList[k].parameter.parameter){
                         str += value + ", ";
                     }
 
                     str += "}\r\n"; 
                 }
                 str += "\r\n";
+                File.WriteAllText(@"./AgentGene/Gene_Village" + i + "Generation" + generation + ".txt", str);
             }
         }
 

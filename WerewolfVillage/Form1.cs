@@ -115,6 +115,7 @@ namespace WerewolfVillage
 
         private void StartAutoGame_Click(object sender, EventArgs e)
         {
+            ResultBox.Text += DateTime.Now.ToString() + "\r\n";
             AgentName[0] = AgentName1.Text;
             AgentName[1] = AgentName2.Text;
             AgentName[2] = AgentName3.Text;
@@ -153,7 +154,8 @@ namespace WerewolfVillage
             //File.WriteAllText(@"./LogText.txt", printText);
             //File.WriteAllText(@"./ResultVoteText.txt", resultVoteText);
             //File.WriteAllText(@"./ResultVoteAndRaidText.txt", resultVoteAndRaidText);
-            ResultBox.Text = "End to Game";
+            ResultBox.Text += "End to Game\r\n";
+            ResultBox.Text += DateTime.Now.ToString() + "\r\n";
         }
 
         private void AutoGame_ValueChanged(object sender, EventArgs e)

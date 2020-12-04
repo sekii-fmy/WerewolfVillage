@@ -594,6 +594,8 @@ namespace WerewolfVillage
                                 {
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] += gene.parameter[15] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[1];
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[16];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] -= gene.parameter[16];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] -= gene.parameter[16];
                                 }
                             }
                             break;
@@ -605,6 +607,8 @@ namespace WerewolfVillage
                                 {
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] += gene.parameter[18] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[2];
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[19];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] -= gene.parameter[19];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] -= gene.parameter[19];
                                 }
                             }
                             break;
@@ -616,6 +620,8 @@ namespace WerewolfVillage
                                 {
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] += gene.parameter[21] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[3];
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[22];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] -= gene.parameter[22];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] -= gene.parameter[22];
                                 }
                             }
                             break;
@@ -627,6 +633,9 @@ namespace WerewolfVillage
                                 {
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 4] += gene.parameter[24] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[4];
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[25];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] -= gene.parameter[25];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] -= gene.parameter[25];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] -= gene.parameter[25];
                                 }
                             }
                             break;
@@ -638,6 +647,9 @@ namespace WerewolfVillage
                                 {
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 5] += gene.parameter[27] * rolevalue * mentalAgentList[i].reliability[getAgentNum(gameData.Name)] / num_roleCO[5];
                                     mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 0] -= gene.parameter[28];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 1] -= gene.parameter[28];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 2] -= gene.parameter[28];
+                                    mentalAgentList[i].oppositeTable.table[getAgentNum(co[0]), 3] -= gene.parameter[28];
                                 }
                             }
                             break;

@@ -366,7 +366,7 @@ namespace WerewolfVillage
                     Form1.resultVoteAndRaidText += agentList[i].name + "(" + agentList[i].role + ")" + "    →    "
                          + voteArray[i] + "(" + getAgent(voteArray[i]).role + ")" + "\r\n";
 
-                    if (getAgent(voteArray[i]).role == Role.人狼 && agentList[i].role != Role.人狼)
+                    if (getAgent(voteArray[i]).role == Role.人狼 && (agentList[i].role != Role.人狼 && agentList[i].role != Role.狂人))
                     {
                         agentList[i].resultMatch.result_VOTEtoWOLF();
                     }
@@ -897,7 +897,7 @@ namespace WerewolfVillage
                 + gameData.Role + ","
                 + gameData.Utterance + "\r\n";
 
-            consoleOutPut(gameData);
+            //consoleOutPut(gameData);
         }
 
         public void consoleOutPut(GameData gameData)

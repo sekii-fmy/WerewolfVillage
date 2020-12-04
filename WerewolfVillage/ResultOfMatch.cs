@@ -30,8 +30,11 @@ namespace WerewolfVillage
             point = 0;
             num_game = 0;
             num_win = 0;
-            num_rolePlay = new int[6] { 0, 0, 0, 0, 0, 0 };
-            num_roleWin = new int[6] { 0, 0, 0, 0, 0, 0 };
+            for (int i = 0; i < 6; i++)
+            {
+                num_rolePlay[i] = 0;
+                num_roleWin[i] = 0;
+            }
         }
 
         public void result_WIN()

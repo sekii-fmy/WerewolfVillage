@@ -13,11 +13,13 @@ namespace WerewolfVillage
         public int num_win;
         public int[] num_rolePlay;
         public int[] num_roleWin;
-        public int point;
+        public int villagePoint;
+        public int wolfPoint;
 
         public ResultOfMatch(int num)
         {
-            point = 0;
+            villagePoint = 0;
+            wolfPoint = 0;
             playerNum = num;
             num_game = 0;
             num_win = 0;
@@ -27,7 +29,8 @@ namespace WerewolfVillage
 
         public void ResetResult()
         {
-            point = 0;
+            villagePoint = 0;
+            wolfPoint = 0;
             num_game = 0;
             num_win = 0;
             for (int i = 0; i < 6; i++)
@@ -37,29 +40,39 @@ namespace WerewolfVillage
             }
         }
 
-        public void result_WIN()
+        public void result_VillagerWIN()
         {
-            point += 10;
+            villagePoint += 10;
         }
 
-        public void result_LOSE()
+        public void result_WolfWIN()
         {
-            point += 0;
+            wolfPoint += 10;
+        }
+
+        public void result_VillagerLOSE()
+        {
+            villagePoint += 0;
+        }
+
+        public void result_WolfLOSE()
+        {
+            wolfPoint += 0;
         }
 
         public void result_WOLFALIVE()
         {
-            point += 5;
+            wolfPoint += 5;
         }
 
         public void result_VILLAGERALIVE()
         {
-            point += 1;
+            villagePoint += 1;
         }
 
         public void result_VOTEtoWOLF()
         {
-            point += 1;
+            villagePoint += 1;
         }
     }
 }

@@ -115,7 +115,11 @@ namespace WerewolfVillage
 
         private void StartAutoGame_Click(object sender, EventArgs e)
         {
-            ResultBox.Text += DateTime.Now.ToString() + "\r\n";
+            MakeDirectory();
+            string str = null;
+            str += "Start to Game\r\n";
+            string time = DateTime.Now.ToString() + "\r\n";
+            str += time;
             AgentName[0] = AgentName1.Text;
             AgentName[1] = AgentName2.Text;
             AgentName[2] = AgentName3.Text;
@@ -154,8 +158,10 @@ namespace WerewolfVillage
             //File.WriteAllText(@"./LogText.txt", printText);
             //File.WriteAllText(@"./ResultVoteText.txt", resultVoteText);
             //File.WriteAllText(@"./ResultVoteAndRaidText.txt", resultVoteAndRaidText);
-            ResultBox.Text += "End to Game\r\n";
-            ResultBox.Text += DateTime.Now.ToString() + "\r\n";
+            str += "End to Game\r\n";
+            str += DateTime.Now.ToString() + "\r\n\r\n";
+            ResultBox.Text += str + "End of Output \r\n";
+            File.WriteAllText(@"./StartTime.txt", str);
         }
 
         private void AutoGame_ValueChanged(object sender, EventArgs e)
@@ -176,6 +182,34 @@ namespace WerewolfVillage
         private void GenerationNum_ValueChanged(object sender, EventArgs e)
         {
             generationNumbers = (int)GenerationNum.Value;
+        }
+
+        void MakeDirectory()
+        {
+            if (!Directory.Exists(@"./AgentGene"))
+            {
+                Directory.CreateDirectory(@"./AgentGene");
+            }
+            if (!Directory.Exists(@"./GameData_Village"))
+            {
+                Directory.CreateDirectory(@"./GameData_Village");
+            }
+            if (!Directory.Exists(@"./LogText"))
+            {
+                Directory.CreateDirectory(@"./LogText");
+            }
+            if (!Directory.Exists(@"./ResultVoteAndRaidText"))
+            {
+                Directory.CreateDirectory(@"./ResultVoteAndRaidText");
+            }
+            if (!Directory.Exists(@"./ResultVoteText"))
+            {
+                Directory.CreateDirectory(@"./ResultVoteText");
+            }
+            if (!Directory.Exists(@"./Total_ResultOfMatch"))
+            {
+                Directory.CreateDirectory(@"./Total_ResultOfMatch");
+            }
         }
     }
 }

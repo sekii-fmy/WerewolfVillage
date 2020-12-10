@@ -1,0 +1,120 @@
+PlayerNumber = 0
+num_game : 80
+num_win : 22
+num_rolePlay : 40, 4, 8, 6, 5, 17, 
+num_roleWin : 0, 0, 0, 0, 5, 17, 
+VillagePoint : 9
+WolfPoint : 295
+
+PlayerNumber = 1
+num_game : 80
+num_win : 29
+num_rolePlay : 35, 5, 5, 6, 8, 21, 
+num_roleWin : 0, 0, 0, 0, 8, 21, 
+VillagePoint : 14
+WolfPoint : 390
+
+PlayerNumber = 2
+num_game : 80
+num_win : 17
+num_rolePlay : 41, 7, 8, 7, 7, 10, 
+num_roleWin : 0, 0, 0, 0, 7, 10, 
+VillagePoint : 19
+WolfPoint : 220
+
+PlayerNumber = 3
+num_game : 80
+num_win : 20
+num_rolePlay : 44, 7, 5, 4, 5, 15, 
+num_roleWin : 0, 0, 0, 0, 5, 15, 
+VillagePoint : 12
+WolfPoint : 275
+
+PlayerNumber = 4
+num_game : 80
+num_win : 17
+num_rolePlay : 47, 3, 7, 6, 5, 12, 
+num_roleWin : 0, 0, 0, 0, 5, 12, 
+VillagePoint : 11
+WolfPoint : 230
+
+PlayerNumber = 5
+num_game : 80
+num_win : 24
+num_rolePlay : 42, 7, 5, 2, 6, 18, 
+num_roleWin : 0, 0, 0, 0, 6, 18, 
+VillagePoint : 11
+WolfPoint : 325
+
+PlayerNumber = 6
+num_game : 80
+num_win : 15
+num_rolePlay : 51, 4, 3, 7, 4, 11, 
+num_roleWin : 0, 0, 0, 0, 4, 11, 
+VillagePoint : 19
+WolfPoint : 205
+
+PlayerNumber = 7
+num_game : 80
+num_win : 23
+num_rolePlay : 41, 7, 6, 3, 4, 19, 
+num_roleWin : 0, 0, 0, 0, 4, 19, 
+VillagePoint : 12
+WolfPoint : 320
+
+PlayerNumber = 8
+num_game : 80
+num_win : 23
+num_rolePlay : 39, 5, 5, 8, 3, 20, 
+num_roleWin : 0, 0, 0, 0, 3, 20, 
+VillagePoint : 25
+WolfPoint : 325
+
+PlayerNumber = 9
+num_game : 80
+num_win : 26
+num_rolePlay : 43, 4, 3, 4, 6, 20, 
+num_roleWin : 0, 0, 0, 0, 6, 20, 
+VillagePoint : 20
+WolfPoint : 360
+
+PlayerNumber = 10
+num_game : 80
+num_win : 17
+num_rolePlay : 42, 9, 8, 4, 5, 12, 
+num_roleWin : 0, 0, 0, 0, 5, 12, 
+VillagePoint : 22
+WolfPoint : 230
+
+PlayerNumber = 11
+num_game : 80
+num_win : 22
+num_rolePlay : 42, 3, 5, 8, 3, 19, 
+num_roleWin : 0, 0, 0, 0, 3, 19, 
+VillagePoint : 34
+WolfPoint : 310
+
+PlayerNumber = 12
+num_game : 80
+num_win : 23
+num_rolePlay : 45, 4, 4, 4, 9, 14, 
+num_roleWin : 0, 0, 0, 0, 9, 14, 
+VillagePoint : 35
+WolfPoint : 300
+
+PlayerNumber = 13
+num_game : 80
+num_win : 18
+num_rolePlay : 52, 4, 3, 3, 3, 15, 
+num_roleWin : 0, 0, 0, 0, 3, 15, 
+VillagePoint : 53
+WolfPoint : 255
+
+PlayerNumber = 14
+num_game : 80
+num_win : 24
+num_rolePlay : 36, 7, 5, 8, 7, 17, 
+num_roleWin : 0, 0, 0, 0, 7, 17, 
+VillagePoint : 55
+WolfPoint : 325
+

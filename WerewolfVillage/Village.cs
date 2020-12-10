@@ -9,6 +9,9 @@ namespace WerewolfVillage
 
     class Village
     {
+        static int seed = Environment.TickCount;
+        Random rnd = new Random(seed++);
+
         public List<Agent> agentList;                   //エージェントリスト
         int day;                                        //日付
         int serialNum;                                  //ゲームデータの通し番号
@@ -336,8 +339,6 @@ namespace WerewolfVillage
             string[] voteArray = new string[Form1.num_villager];
             int[] voteCountArray = new int[Form1.num_villager];
             int max_vote = 0;
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             Form1.resultVoteText += "Vote \r\n";
             Form1.resultVoteAndRaidText += "Vote \r\n";
 
@@ -407,8 +408,6 @@ namespace WerewolfVillage
             string[] raidArray = new string[Form1.num_villager];
             int[] raidCountVote = new int[Form1.num_villager];
             int max_vote = 0;
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             Form1.resultVoteAndRaidText += "Raid \r\n";
 
             for (int i = 0; i < Form1.num_villager; i++)
@@ -931,7 +930,7 @@ namespace WerewolfVillage
                     agentList[i].resultMatch.num_win++;
                     agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
                     agentList[i].resultMatch.num_roleWin[(int)agentList[i].role]++;
-                    agentList[i].resultMatch.result_WIN();
+                    agentList[i].resultMatch.result_VillagerWIN();
                     if (agentList[i].alive)
                     {
                         agentList[i].resultMatch.result_VILLAGERALIVE();
@@ -941,7 +940,7 @@ namespace WerewolfVillage
                 {
                     agentList[i].resultMatch.num_game++;
                     agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
-                    agentList[i].resultMatch.result_LOSE();
+                    agentList[i].resultMatch.result_WolfLOSE();
                     if (agentList[i].alive)
                     {
                         agentList[i].resultMatch.result_WOLFALIVE();
@@ -960,7 +959,7 @@ namespace WerewolfVillage
                     agentList[i].resultMatch.num_win++;
                     agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
                     agentList[i].resultMatch.num_roleWin[(int)agentList[i].role]++;
-                    agentList[i].resultMatch.result_WIN();
+                    agentList[i].resultMatch.result_WolfWIN();
                     if (agentList[i].alive)
                     {
                         agentList[i].resultMatch.result_WOLFALIVE();
@@ -970,7 +969,7 @@ namespace WerewolfVillage
                 {
                     agentList[i].resultMatch.num_game++;
                     agentList[i].resultMatch.num_rolePlay[(int)agentList[i].role]++;
-                    agentList[i].resultMatch.result_LOSE();
+                    agentList[i].resultMatch.result_VillagerLOSE();
                     if (agentList[i].alive)
                     {
                         agentList[i].resultMatch.result_VILLAGERALIVE();

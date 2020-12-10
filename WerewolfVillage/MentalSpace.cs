@@ -9,6 +9,9 @@ namespace WerewolfVillage
 {
     class MentalSpace
     {
+        static int seed = Environment.TickCount;
+        Random rnd = new Random(seed++);
+
         GeneOfParameter gene;
         string name;
         Role myRole = Role.村人;
@@ -2087,16 +2090,14 @@ namespace WerewolfVillage
                 else if (!isDisireCO)
                 {
                     gameData.Tag = "CO希望";
-                    int seed = Environment.TickCount;
-                    Random rnd = new Random(seed++);
-                    int rndvalue = rnd.Next(0, 1000);
+                    int rndvalue = rnd.Next(0, 1001);
                     if (rndvalue < gene.parameter[4] * 1000)
                     {
-                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0,2)]) + ":霊能者 ";
+                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0,3)]) + ":霊能者 ";
                     }
                     else if (rndvalue < (gene.parameter[4] + gene.parameter[5]) * 1000)
                     {
-                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0, 2)]) + ":占い師 ";
+                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0, 3)]) + ":占い師 ";
                     }
                     else
                     {
@@ -2119,7 +2120,6 @@ namespace WerewolfVillage
                 if (!isDisireRaid)
                 {
                     List<string> raidTarget = new List<string>();
-                    Random rnd = new Random();
                     isDisireRaid = true;
                     gameData.Tag += "襲撃希望 ";
                     for (int i = 0; i < Form1.num_villager; i++)
@@ -2133,7 +2133,7 @@ namespace WerewolfVillage
                     }
                     if(raidTarget.Count != 0)
                     {
-                        gameData.Guess = "襲撃意思:" + Complement(raidTarget[rnd.Next(0, raidTarget.Count - 1)]);
+                        gameData.Guess = "襲撃意思:" + Complement(raidTarget[rnd.Next(0, raidTarget.Count)]);
                         return gameData;
                     }
 
@@ -2158,7 +2158,7 @@ namespace WerewolfVillage
                     }
                     if(raidTarget.Count != 0)
                     {
-                        gameData.Guess = "襲撃意思:" + Complement(raidTarget[rnd.Next(0, raidTarget.Count - 1)]);
+                        gameData.Guess = "襲撃意思:" + Complement(raidTarget[rnd.Next(0, raidTarget.Count)]);
                         return gameData;
                     }
                     gameData.Guess = "襲撃意思:" + Complement(mentalAgentList[min].agent.name);
@@ -2293,9 +2293,7 @@ namespace WerewolfVillage
         /// <param name="gameData"></param>
         public GameData possessedCO(GameData gameData)
         {
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
-            int rndvalue = rnd.Next(0, 1000);
+            int rndvalue = rnd.Next(0, 1001);
             if (rndvalue < gene.parameter[2] * 1000)
             {
                 myRole = Role.占い師;
@@ -2329,9 +2327,7 @@ namespace WerewolfVillage
         /// <returns></returns>
         public GameData wolfCO(GameData gameData)
         {
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
-            int rndvalue = rnd.Next(0, 1000);
+            int rndvalue = rnd.Next(0, 1001);
             if (rndvalue < (gene.parameter[0] + probaCO[1]) * 1000)
             {
                 myRole = Role.占い師;
@@ -2404,7 +2400,6 @@ namespace WerewolfVillage
         /// <returns></returns>
         public GameData utteranceDeceiveFortune(GameData gameData)
         {
-            Random rnd = new Random();
             string target = decideFortune();
             gameData.Name = name;
             gameData.Public = "白";
@@ -2415,7 +2410,7 @@ namespace WerewolfVillage
             }
             else
             {
-                if(rnd.Next(0,1000) < gene.parameter[6] * 1000)
+                if(rnd.Next(0,1001) < gene.parameter[6] * 1000)
                 {
                     gameData.Guess = Complement(target) + ":人狼";
                 }
@@ -2434,7 +2429,6 @@ namespace WerewolfVillage
         /// <returns></returns>
         public GameData utteranceDeceivePsychic(GameData gameData)
         {
-            Random rnd = new Random();
             string target = result_ExecuteList[result_ExecuteList.Count - 1].Guess;
             gameData.Name = name;
             gameData.Public = "白";
@@ -2445,7 +2439,7 @@ namespace WerewolfVillage
             }
             else
             {
-                if (rnd.Next(0, 1000) < gene.parameter[7] * 1000)
+                if (rnd.Next(0, 1001) < gene.parameter[7] * 1000)
                 {
                     gameData.Guess = Complement(target) + ":人狼";
                 }
@@ -2679,8 +2673,6 @@ namespace WerewolfVillage
             int num_max = 0;
             while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
             List<string> voteTarget = new List<string>();
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 //　投票意思値が高く、自分でも人狼の仲間でもない相手
@@ -2705,7 +2697,7 @@ namespace WerewolfVillage
                 return mentalAgentList[rnd.Next(0,Form1.num_villager)].agent.name;
             }
 
-            return voteTarget[rnd.Next(0, voteTarget.Count - 1)];
+            return voteTarget[rnd.Next(0, voteTarget.Count)];
 
         }
 
@@ -2718,8 +2710,6 @@ namespace WerewolfVillage
             int num_max = 0;
             while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
             List<string> fortuneTarget = new List<string>();
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if( (mentalAgentList[i].fortune > mentalAgentList[num_max].fortune)
@@ -2745,7 +2735,7 @@ namespace WerewolfVillage
                 return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
             }
 
-            return fortuneTarget[rnd.Next(0, fortuneTarget.Count - 1)];
+            return fortuneTarget[rnd.Next(0, fortuneTarget.Count)];
 
         }
 
@@ -2776,8 +2766,6 @@ namespace WerewolfVillage
             int num_max = 0;
             while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
             List<string> bodyguardTarget = new List<string>();
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if ((mentalAgentList[i].bodyguard > mentalAgentList[num_max].bodyguard)
@@ -2801,7 +2789,7 @@ namespace WerewolfVillage
                 return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
             }
 
-            bodyGuardList.Add(bodyguardTarget[rnd.Next(0, bodyguardTarget.Count - 1)]);
+            bodyGuardList.Add(bodyguardTarget[rnd.Next(0, bodyguardTarget.Count)]);
             return bodyGuardList[bodyGuardList.Count - 1];
         }
 
@@ -2814,8 +2802,6 @@ namespace WerewolfVillage
             int num_max = 0;
             while (num_max == getAgentNum(name) || !mentalAgentList[num_max].alive) num_max++;
             List<string> raidTarget = new List<string>();
-            int seed = Environment.TickCount;
-            Random rnd = new Random(seed++);
             for (int i = 0; i < Form1.num_villager; i++)
             {
                 if (mentalAgentList[i].raid > mentalAgentList[num_max].raid && mentalAgentList[i].alive
@@ -2839,7 +2825,7 @@ namespace WerewolfVillage
                 return mentalAgentList[rnd.Next(0, Form1.num_villager)].agent.name;
             }
 
-            return raidTarget[rnd.Next(0, raidTarget.Count - 1)];
+            return raidTarget[rnd.Next(0, raidTarget.Count)];
         } 
 
         /// <summary>

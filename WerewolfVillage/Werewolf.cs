@@ -10,15 +10,19 @@ namespace WerewolfVillage
     class Werewolf
     {
         //Village village = new Village();
-        Random rnd = new Random();
+        static int seed = Environment.TickCount;
+        static Random rnd = new Random(seed);
         GameData gameData;
         List<Agent> geneList = new List<Agent>();
         List<Village> villageList = new List<Village>();
         List<List<Agent>> villagers = new List<List<Agent>>();
+
         int oneGenerationGames = Form1.generationNumbers;
         int villageNumbers = Form1.villageNumbers;
         int generationNumbers = Form1.generationNumbers;
-        static double mutation_p = 0.001;        //突然変異率
+
+        static double mutation_p = 0.01;        //突然変異率
+        static double exchangeGeneration = 5;      //交流までの世代数
 
         public Werewolf()
         {
@@ -44,7 +48,7 @@ namespace WerewolfVillage
                 generation++;
                 exchange++;
                 selection(generation, exchange);
-                if(exchange >= 10 && generation < generationNumbers)
+                if(exchange >= exchangeGeneration && generation < generationNumbers)
                 {
                     exchangeGene();
                     exchange = 0;
@@ -74,10 +78,10 @@ namespace WerewolfVillage
             for (int i = 0; i < villageNumbers; i++)
             {
                 List<Agent> villager = new List<Agent>();
-                GeneOfParameter gene = new GeneOfParameter(); //消す
+                //GeneOfParameter gene = new GeneOfParameter(); //消す
                 do
                 {
-                    //villager.Add(new Agent(gene, (k % 15)));
+                    //villager.Add(new Agent(gene, (k % 15)));  //消す
                     villager.Add(geneList[k]);
                     k++;
                 } while (k < (i + 1) * 15);
@@ -119,23 +123,48 @@ namespace WerewolfVillage
         {
             for (int i = 0; i < villageNumbers; i++)
             {
-                villageList[i].agentList.Sort((a, b) => b.resultMatch.point - a.resultMatch.point);
+                villageList[i].agentList.Sort((a, b) => (b.resultMatch.villagePoint / (b.resultMatch.num_game - b.resultMatch.num_rolePlay[4] - b.resultMatch.num_rolePlay[5])) - (a.resultMatch.villagePoint / (a.resultMatch.num_game - a.resultMatch.num_rolePlay[4] - a.resultMatch.num_rolePlay[5])));
+                Agent village_1st = copyAgent(villageList[i].agentList[0], villageList[i].agentList[0].resultMatch.playerNum);
+                Agent village_2nd = copyAgent(villageList[i].agentList[1], villageList[i].agentList[1].resultMatch.playerNum);
+
+                villageList[i].agentList.Sort((a, b) => (b.resultMatch.wolfPoint / (b.resultMatch.num_rolePlay[4] + b.resultMatch.num_rolePlay[5])) - (a.resultMatch.wolfPoint / (a.resultMatch.num_rolePlay[4] + a.resultMatch.num_rolePlay[5])));
+                Agent wolf_1st = copyAgent(villageList[i].agentList[0], villageList[i].agentList[0].resultMatch.playerNum);
+                Agent wolf_2nd = copyAgent(villageList[i].agentList[1], villageList[i].agentList[1].resultMatch.playerNum);
                 //スコアでソート
 
-                villageList[i].agentList[7] = copyAgent(villageList[i].agentList[0], villageList[i].agentList[7].resultMatch.playerNum);      //1位の複製
-                villageList[i].agentList[8] = copyAgent(villageList[i].agentList[1], villageList[i].agentList[8].resultMatch.playerNum);      //2位の複製
-                villageList[i].agentList[9] = copyAgent(villageList[i].agentList[2], villageList[i].agentList[9].resultMatch.playerNum);      //3位の複製
+                villageList[i].agentList[0] = village_1st;       //村ポイント1位
+                villageList[i].agentList[1] = village_2nd;       //村ポイント2位
+                villageList[i].agentList[2] = wolf_1st;          //人狼ポイント1位
+                villageList[i].agentList[3] = wolf_2nd;          //人狼ポイント2位
 
-                villageList[i].agentList[10] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[10].resultMatch.playerNum);
-                villageList[i].agentList[11] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[11].resultMatch.playerNum);
-                villageList[i].agentList[12] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[12].resultMatch.playerNum);
-                villageList[i].agentList[13] = new Agent(cross(villageList[i].agentList, 6), villageList[i].agentList[13].resultMatch.playerNum);
-                //上位個体同士の子孫
+                villageList[i].agentList[4] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[4].resultMatch.playerNum);
+                villageList[i].agentList[5] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[5].resultMatch.playerNum);
+                villageList[i].agentList[6] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[6].resultMatch.playerNum);
+                villageList[i].agentList[7] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[2]), villageList[i].agentList[7].resultMatch.playerNum);
+                villageList[i].agentList[8] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[2]), villageList[i].agentList[8].resultMatch.playerNum);
+                villageList[i].agentList[9] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[2]), villageList[i].agentList[9].resultMatch.playerNum);
+                //村1位,人狼1位の子孫6個体
 
-                villageList[i].agentList[14] = new Agent(new GeneOfParameter(), villageList[i].agentList[14].resultMatch.playerNum);
-                //新しい個体
+                villageList[i].agentList[10] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[3], villageList[i].agentList[0]), villageList[i].agentList[10].resultMatch.playerNum);
+                villageList[i].agentList[11] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[3], villageList[i].agentList[3]), villageList[i].agentList[11].resultMatch.playerNum);
+                //村1位,人狼2位の子孫2個体
 
-                for(int k = 0; k < Form1.num_villager; k++)
+                villageList[i].agentList[12] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[2], villageList[i].agentList[1]), villageList[i].agentList[12].resultMatch.playerNum);
+                villageList[i].agentList[13] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[2], villageList[i].agentList[2]), villageList[i].agentList[13].resultMatch.playerNum);
+                //村2位,人狼1位の子孫2個体
+
+                if (rnd.Next() % 2 == 0)
+                {
+                    villageList[i].agentList[14] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[3], villageList[i].agentList[1]), villageList[i].agentList[14].resultMatch.playerNum);
+                }
+                else
+                {
+                    villageList[i].agentList[14] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[3], villageList[i].agentList[3]), villageList[i].agentList[14].resultMatch.playerNum);
+                }
+                //村2位,人狼2位の子孫1個体
+
+
+                for (int k = 0; k < Form1.num_villager; k++)
                 {
                     //一定確率で、ランダムに突然変異する
                     if (rnd.NextDouble() < mutation_p)
@@ -162,18 +191,102 @@ namespace WerewolfVillage
 
         /// <summary>
         /// 交叉
-        /// リスト内の上位rank位以上のうち2個体をランダムで選択して交叉
+        /// 2個体の人狼側パラメータ、村人側パラメータ、共用パラメータをそれぞれ遺伝した個体を生成する
         /// </summary>
         /// <param name="list"></param>
         /// <param name="rank"></param>
-        public GeneOfParameter cross(List<Agent> list, int rank)
+        public GeneOfParameter cross(Agent villageAgent, Agent wolfAgent, Agent common )
         {
-            int[] crossAgent = new int[2] { rnd.Next(0, rank), rnd.Next(0, rank) };
             GeneOfParameter gene = new GeneOfParameter();
-            for(int i = 0; i < GeneOfParameter.length_gene; i++)
-            {
-                gene.parameter[i] = list[crossAgent[rnd.Next(0, 1)]].parameter.parameter[i];
-            }
+            gene.parameter[0] = wolfAgent.parameter.parameter[0];
+            gene.parameter[1] = wolfAgent.parameter.parameter[1];
+            gene.parameter[2] = wolfAgent.parameter.parameter[2];
+            gene.parameter[3] = wolfAgent.parameter.parameter[3];
+            gene.parameter[4] = wolfAgent.parameter.parameter[4];
+            gene.parameter[5] = wolfAgent.parameter.parameter[5];
+            gene.parameter[6] = wolfAgent.parameter.parameter[6];
+            gene.parameter[7] = wolfAgent.parameter.parameter[7];
+            gene.parameter[40] = wolfAgent.parameter.parameter[40];
+            gene.parameter[41] = wolfAgent.parameter.parameter[41];
+            gene.parameter[56] = wolfAgent.parameter.parameter[56];
+            gene.parameter[65] = wolfAgent.parameter.parameter[65];
+            gene.parameter[66] = wolfAgent.parameter.parameter[66];
+            gene.parameter[85] = wolfAgent.parameter.parameter[85];
+            gene.parameter[86] = wolfAgent.parameter.parameter[86];
+            gene.parameter[87] = wolfAgent.parameter.parameter[87];
+
+            gene.parameter[39] = villageAgent.parameter.parameter[39];
+            gene.parameter[44] = villageAgent.parameter.parameter[44];
+            gene.parameter[45] = villageAgent.parameter.parameter[45];
+            gene.parameter[46] = villageAgent.parameter.parameter[46];
+            gene.parameter[47] = villageAgent.parameter.parameter[47];
+            gene.parameter[49] = villageAgent.parameter.parameter[49];
+            gene.parameter[51] = villageAgent.parameter.parameter[51];
+            gene.parameter[53] = villageAgent.parameter.parameter[53];
+            gene.parameter[55] = villageAgent.parameter.parameter[55];
+            gene.parameter[58] = villageAgent.parameter.parameter[58];
+            gene.parameter[60] = villageAgent.parameter.parameter[60];
+            gene.parameter[67] = villageAgent.parameter.parameter[67];
+            gene.parameter[68] = villageAgent.parameter.parameter[68];
+            gene.parameter[69] = villageAgent.parameter.parameter[69];
+            gene.parameter[70] = villageAgent.parameter.parameter[70];
+            gene.parameter[73] = villageAgent.parameter.parameter[73];
+            gene.parameter[75] = villageAgent.parameter.parameter[75];
+            gene.parameter[77] = villageAgent.parameter.parameter[77];
+            gene.parameter[80] = villageAgent.parameter.parameter[80];
+            gene.parameter[81] = villageAgent.parameter.parameter[81];
+            gene.parameter[82] = villageAgent.parameter.parameter[82];
+            gene.parameter[83] = villageAgent.parameter.parameter[83];
+            gene.parameter[84] = villageAgent.parameter.parameter[84];
+
+            gene.parameter[9] = common.parameter.parameter[9];
+            gene.parameter[10] = common.parameter.parameter[10];
+            gene.parameter[11] = common.parameter.parameter[11];
+            gene.parameter[12] = common.parameter.parameter[12];
+            gene.parameter[13] = common.parameter.parameter[13];
+            gene.parameter[14] = common.parameter.parameter[14];
+            gene.parameter[15] = common.parameter.parameter[15];
+            gene.parameter[16] = common.parameter.parameter[16];
+            gene.parameter[17] = common.parameter.parameter[17];
+            gene.parameter[18] = common.parameter.parameter[18];
+            gene.parameter[19] = common.parameter.parameter[19];
+            gene.parameter[20] = common.parameter.parameter[20];
+            gene.parameter[21] = common.parameter.parameter[21];
+            gene.parameter[22] = common.parameter.parameter[22];
+            gene.parameter[23] = common.parameter.parameter[23];
+            gene.parameter[24] = common.parameter.parameter[24];
+            gene.parameter[25] = common.parameter.parameter[25];
+            gene.parameter[26] = common.parameter.parameter[26];
+            gene.parameter[27] = common.parameter.parameter[27];
+            gene.parameter[28] = common.parameter.parameter[28];
+            gene.parameter[29] = common.parameter.parameter[29];
+            gene.parameter[30] = common.parameter.parameter[30];
+            gene.parameter[31] = common.parameter.parameter[31];
+            gene.parameter[32] = common.parameter.parameter[32];
+            gene.parameter[33] = common.parameter.parameter[33];
+            gene.parameter[34] = common.parameter.parameter[34];
+            gene.parameter[35] = common.parameter.parameter[35];
+            gene.parameter[36] = common.parameter.parameter[36];
+            gene.parameter[37] = common.parameter.parameter[37];
+            gene.parameter[38] = common.parameter.parameter[38];
+            gene.parameter[42] = common.parameter.parameter[42];
+            gene.parameter[43] = common.parameter.parameter[43];
+            gene.parameter[48] = common.parameter.parameter[48];
+            gene.parameter[50] = common.parameter.parameter[50];
+            gene.parameter[52] = common.parameter.parameter[52];
+            gene.parameter[54] = common.parameter.parameter[54];
+            gene.parameter[57] = common.parameter.parameter[57];
+            gene.parameter[59] = common.parameter.parameter[59];
+            gene.parameter[61] = common.parameter.parameter[61];
+            gene.parameter[62] = common.parameter.parameter[62];
+            gene.parameter[63] = common.parameter.parameter[63];
+            gene.parameter[64] = common.parameter.parameter[64];
+            gene.parameter[71] = common.parameter.parameter[71];
+            gene.parameter[72] = common.parameter.parameter[72];
+            gene.parameter[74] = common.parameter.parameter[74];
+            gene.parameter[76] = common.parameter.parameter[76];
+            gene.parameter[78] = common.parameter.parameter[78];
+            gene.parameter[79] = common.parameter.parameter[79];
 
             return gene;
         }
@@ -185,8 +298,7 @@ namespace WerewolfVillage
         /// <returns></returns>
         public GeneOfParameter mutation(GeneOfParameter gene)
         {
-            Random rnd = new Random();
-            gene.parameter[rnd.Next(0, GeneOfParameter.length_gene - 1)] = rnd.NextDouble();
+            gene.parameter[rnd.Next(0, GeneOfParameter.length_gene)] = rnd.NextDouble();
 
             return gene;
         }
@@ -246,7 +358,8 @@ namespace WerewolfVillage
                 {
                     str += result.num_roleWin[k] + ", ";
                 }
-                str += "\r\n"+"point : " + result.point;
+                str += "\r\n" + "VillagePoint : " + result.villagePoint;
+                str += "\r\n" + "WolfPoint : " + result.wolfPoint;
                 str += "\r\n\r\n";
             }
             File.WriteAllText(@"./Total_ResultOfMatch/Result_village"+ villageNum + "Generation" + generation +".txt", str);
@@ -255,9 +368,9 @@ namespace WerewolfVillage
 
         public void printSurvivalAgent(int generation)
         {
-            string str = null;
             for (int i = 0; i < villageNumbers; i++)
             {
+                string str = null;
                 str += "village" + i + "\r\n";
                 for (int k = 0; k < Form1.num_villager; k++)
                 {

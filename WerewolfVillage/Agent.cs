@@ -22,10 +22,11 @@ namespace WerewolfVillage
         public string name;
         public Role role;
         public bool alive;
+        public MentalSpace mentalSpace;
 
         public GeneOfParameter parameter;
         public ResultOfMatch resultMatch;
-        public MentalSpace mentalSpace;
+
 
         public Agent(GeneOfParameter geneParameter, int agentNum)
         {

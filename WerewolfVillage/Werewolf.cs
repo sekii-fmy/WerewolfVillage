@@ -100,6 +100,11 @@ namespace WerewolfVillage
             }
         }
 
+        /// <summary>
+        /// 個体・村の作成
+        /// </summary>
+        /// <param name="village"></param>
+        /// <param name="generation"></param>
         public void overGene(int village, int generation)
         {
             for (int i = 0; i < villageNumbers; i++)

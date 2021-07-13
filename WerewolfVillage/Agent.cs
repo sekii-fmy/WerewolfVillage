@@ -22,6 +22,7 @@ namespace WerewolfVillage
         public string name;
         public Role role;
         public bool alive;
+        public int agentNum;
 
         public GeneOfParameter parameter;
         public ResultOfMatch resultMatch;
@@ -31,6 +32,7 @@ namespace WerewolfVillage
         {
             resultMatch = new ResultOfMatch(agentNum);
             parameter = geneParameter;
+            this.agentNum = agentNum;
         }
 
         public void nextVillage(string name, string agentRole)

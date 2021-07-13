@@ -374,14 +374,14 @@ namespace WerewolfVillage
                                     getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += gene.parameter[37] * invert * soften;
                                     break;
                                 case "白":
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += 0.365 * invert * soften;   //村人 
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += 0.045 * invert * soften;   //占い師
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += 0.045 * invert * soften;   //霊能者
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += 0.045 * invert * soften;   //狩人
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 0] += 0.400 * invert * soften;   //村人 
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 1] += 0.200 * invert * soften;   //占い師
+                                    //getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 2] += 0.045 * invert * soften;   //霊能者
+                                    //getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 3] += 0.045 * invert * soften;   //狩人
                                     break;
                                 case "黒":
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += 0.13 * invert * soften;    //狂人
-                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += 0.37 * invert * soften;    //人狼
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 4] += 0.200 * invert * soften;    //狂人
+                                    getAgent(gameData.Name).oppositeTable.table[getAgentNum(guess[0]), 5] += 0.200 * invert * soften;    //人狼
                                     break;
                                 default:
                                     break;
@@ -417,14 +417,14 @@ namespace WerewolfVillage
                                             getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += gene.parameter[37] * invert * soften;
                                             break;
                                         case "白":
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += 0.365 * invert * soften;   //村人 
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += 0.045 * invert * soften;   //占い師
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += 0.045 * invert * soften;   //霊能者
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += 0.045 * invert * soften;   //狩人
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 0] += 0.400 * invert * soften;   //村人 
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 1] += 0.200 * invert * soften;   //占い師
+                                            //getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 2] += 0.045 * invert * soften;   //霊能者
+                                            //getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 3] += 0.045 * invert * soften;   //狩人
                                             break;
                                         case "黒":
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += 0.13 * invert * soften;    //狂人
-                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += 0.37 * invert * soften;    //人狼
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 4] += 0.25 * invert * soften;    //狂人
+                                            getAgent(gameData.Name).oppositeTable.table[getAgentNum(Abbreviation(guess[0].Substring(0, 1))), 5] += 0.25 * invert * soften;    //人狼
                                             break;
                                     }
 
@@ -2091,11 +2091,7 @@ namespace WerewolfVillage
                 {
                     gameData.Tag = "CO希望";
                     int rndvalue = rnd.Next(0, 1001);
-                    if (rndvalue < gene.parameter[4] * 1000)
-                    {
-                        gameData.Guess += Complement(wolfPlayer[rnd.Next(0,3)]) + ":霊能者 ";
-                    }
-                    else if (rndvalue < (gene.parameter[4] + gene.parameter[5]) * 1000)
+                    if (rndvalue < (gene.parameter[4] + gene.parameter[5]) * 1000)
                     {
                         gameData.Guess += Complement(wolfPlayer[rnd.Next(0, 3)]) + ":占い師 ";
                     }
@@ -2193,31 +2189,31 @@ namespace WerewolfVillage
                 isSendResultOfFortune = true;
                 return utteranceResultOfFortune(gameData);
             }
-            else if ((!isSendResultOfPsychic) && (getAgent(name).agent.role == Role.霊能者)
-                        && psychicGameDataList.Count != 0)
-            {
-                isSendSkip = true;
-                isSendResultOfPsychic = true;
-                return utteranceResultOfPsychic(gameData);
-            }
+            //else if ((!isSendResultOfPsychic) && (getAgent(name).agent.role == Role.霊能者)
+            //             && psychicGameDataList.Count != 0)
+            //{
+            //    isSendSkip = true;
+            //    isSendResultOfPsychic = true;
+            //    return utteranceResultOfPsychic(gameData);
+            //}
             else if ((!isSendResultOfFortune) && myRole == Role.占い師)
             {
                 isSendSkip = true;
                 isSendResultOfFortune = true;
                 return utteranceDeceiveFortune(gameData);
             }
-            else if((!isSendResultOfPsychic) && myRole == Role.霊能者 && gameData.Day != "1日目")
-            {
-                isSendSkip = true;
-                isSendResultOfPsychic = true;
-                return utteranceDeceivePsychic(gameData);
-            }
-            else if (isSuccessGuard && (getAgent(name).agent.role == Role.狩人))
-            {
-                isSendSkip = true;
-                isSuccessGuard = false;
-                return utteranceResultOfGuard(gameData);
-            }
+            //else if((!isSendResultOfPsychic) && myRole == Role.霊能者 && gameData.Day != "1日目")
+            //{
+            //    isSendSkip = true;
+            //    isSendResultOfPsychic = true;
+            //return utteranceDeceivePsychic(gameData);
+            //}
+            //else if (isSuccessGuard && (getAgent(name).agent.role == Role.狩人))
+            //{
+            //    isSendSkip = true;
+            //    isSuccessGuard = false;
+            //    return utteranceResultOfGuard(gameData);
+            //}
             else if (!isSendSkip)
             {
                 isSendSkip = true;
@@ -2260,14 +2256,14 @@ namespace WerewolfVillage
                         gameData.Name = name;
                         gameData.Public = "白";
                         gameData.Tag += "CO ";
-                        gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非霊能者CO ";
+                        gameData.Guess += Complement(name) + ":占い師CO " /*+ Complement(name) + ":非霊能者CO "*/;
                         return gameData;
-                    case Role.霊能者:
-                        gameData.Name = name;
-                        gameData.Public = "白";
-                        gameData.Tag += "CO ";
-                        gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
-                        return gameData;
+                    //case Role.霊能者:
+                    //    gameData.Name = name;
+                    //    gameData.Public = "白";
+                    //    gameData.Tag += "CO ";
+                    //    gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+                    //    return gameData;
                     case Role.狂人:
                         return possessedCO(gameData);
                     case Role.人狼:
@@ -2276,7 +2272,7 @@ namespace WerewolfVillage
                         gameData.Name = name;
                         gameData.Public = "白";
                         gameData.Tag += "CO ";
-                        gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+                        gameData.Guess += Complement(name) + ":非占い師CO " /*+ Complement(name) + ":非霊能者CO "*/;
                         return gameData;
                 }
             }
@@ -2300,23 +2296,23 @@ namespace WerewolfVillage
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非霊能者CO ";
+                gameData.Guess += Complement(name) + ":占い師CO " /*+ Complement(name) + ":非霊能者CO "*/;
             }
-            else if(rndvalue < ( gene.parameter[2] + gene.parameter[3]) * 1000)
-            {
-                myRole = Role.霊能者;
-                gameData.Name = name;
-                gameData.Public = "白";
-                gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
-            }
+            //else if(rndvalue < ( gene.parameter[2] + gene.parameter[3]) * 1000)
+            //{
+             //   myRole = Role.霊能者;
+            //    gameData.Name = name;
+            //    gameData.Public = "白";
+            //    gameData.Tag += "CO ";
+            //    gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+           // }
             else
             {
                 myRole = Role.村人;
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+                gameData.Guess += Complement(name) + ":非占い師CO "/* + Complement(name) + ":非霊能者CO "*/;
             }
             return gameData;
         }
@@ -2334,23 +2330,23 @@ namespace WerewolfVillage
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":占い師CO " + Complement(name) + ":非占い師CO ";
+                gameData.Guess += Complement(name) + ":占い師CO "/* + Complement(name) + ":非占い師CO "*/;
             }
-            else if(rndvalue < (gene.parameter[0] + gene.parameter[1] + probaCO[2]) * 1000)
-            {
-                myRole = Role.霊能者;
-                gameData.Name = name;
-                gameData.Public = "白";
-                gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
-            }
+            //else if(rndvalue < (gene.parameter[0] + gene.parameter[1] + probaCO[2]) * 1000)
+            //{
+             //   myRole = Role.霊能者;
+             //   gameData.Name = name;
+             //   gameData.Public = "白";
+             //   gameData.Tag += "CO ";
+             //   gameData.Guess += Complement(name) + ":霊能者CO " + Complement(name) + ":非占い師CO ";
+            //}
             else
             {
                 myRole = Role.村人;
                 gameData.Name = name;
                 gameData.Public = "白";
                 gameData.Tag += "CO ";
-                gameData.Guess += Complement(name) + ":非占い師CO " + Complement(name) + ":非霊能者CO ";
+                gameData.Guess += Complement(name) + ":非占い師CO " /*+ Complement(name) + ":非霊能者CO "*/;
             }
             return gameData;
         }
@@ -2542,7 +2538,7 @@ namespace WerewolfVillage
                     {
                         gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非占い師 ";
                     }
-
+                    /*
                     if (getAgent(name).oppositeTable.table[i, 2] > gene.parameter[8])
                     {
                         gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "霊能者 ";
@@ -2555,7 +2551,7 @@ namespace WerewolfVillage
                     {
                         gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非霊能者 ";
                     }
-
+                    
                     if (getAgent(name).oppositeTable.table[i, 3] > gene.parameter[8])
                     {
                         gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "狩人 ";
@@ -2568,7 +2564,7 @@ namespace WerewolfVillage
                     {
                         gameData.Guess += Complement(mentalAgentList[i].agent.name) + ":" + "非狩人 ";
                     }
-
+                    */
 
                     if (getAgent(name).oppositeTable.table[i, 4] > gene.parameter[8])
                     {

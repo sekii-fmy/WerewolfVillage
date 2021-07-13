@@ -57,31 +57,31 @@ namespace WerewolfVillage
         /// </summary>
         public void distributeRole()
         {
-            int[] roleArray = randomArray(Form1.num_villager);
+            int[] roleArray = {
+                agentList[0].agentNum,
+                agentList[1].agentNum,
+                agentList[2].agentNum,
+                agentList[3].agentNum,
+                agentList[4].agentNum
+            };
             
             for(int i = 0; i < Form1.num_villager; i++)
             {
                 switch (roleArray[i])
                 {
+                    case 0:
+                        agentList[i].role = Role.村人;
+                        break;
                     case 1:
-                        agentList[i].role = Role.占い師;
+                        agentList[i].role = Role.村人;
                         break;
                     case 2:
-                        agentList[i].role = Role.霊能者;
+                        agentList[i].role = Role.占い師;
                         break;
                     case 3:
-                        agentList[i].role = Role.狩人;
-                        break;
-                    case 4:
                         agentList[i].role = Role.狂人;
                         break;
-                    case 5:
-                        agentList[i].role = Role.人狼;
-                        break;
-                    case 6:
-                        agentList[i].role = Role.人狼;
-                        break;
-                    case 7:
+                    case 4:
                         agentList[i].role = Role.人狼;
                         break;
                     default:
@@ -984,7 +984,7 @@ namespace WerewolfVillage
             {
                 if (agentList[i].alive)
                 {
-                    agentList[i].mentalSpace.printList();
+                    //agentList[i].mentalSpace.printList();
                 }
             }
         }

@@ -8,3 +8,13 @@ C:\Users\com_m\source\repos\WerewolfVillage\WerewolfVillage\bin\Debug\WerewolfVi
 C:\Users\com_m\source\repos\WerewolfVillage\WerewolfVillage\bin\Debug\WerewolfVillage.pdb
 C:\Users\com_m\source\repos\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.exe
 C:\Users\com_m\source\repos\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.pdb
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\bin\Debug\WerewolfVillage.exe.config
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\bin\Debug\WerewolfVillage.exe
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\bin\Debug\WerewolfVillage.pdb
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.csprojAssemblyReference.cache
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.Form1.resources
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.Properties.Resources.resources
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.csproj.GenerateResource.cache
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.csproj.CoreCompileInputs.cache
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.exe
+C:\Users\Owner\source\repos\sekii-fmy\WerewolfVillage\WerewolfVillage\obj\Debug\WerewolfVillage.pdb

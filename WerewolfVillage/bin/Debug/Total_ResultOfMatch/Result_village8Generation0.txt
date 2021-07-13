@@ -1,120 +1,40 @@
 PlayerNumber = 0
-num_game : 10
-num_win : 3
-num_rolePlay : 5, 1, 1, 0, 1, 2, 
-num_roleWin : 0, 0, 0, 0, 1, 2, 
-VillagePoint : 1
-WolfPoint : 40
+num_game : 1000
+num_win : 501
+num_rolePlay : 382, 196, 0, 0, 215, 207, 
+num_roleWin : 211, 110, 0, 0, 93, 87, 
+VillagePoint : 3813
+WolfPoint : 2735
 
 PlayerNumber = 1
-num_game : 10
-num_win : 3
-num_rolePlay : 3, 2, 0, 2, 1, 2, 
-num_roleWin : 0, 0, 0, 0, 1, 2, 
-VillagePoint : 1
-WolfPoint : 40
+num_game : 1000
+num_win : 452
+num_rolePlay : 399, 224, 0, 0, 196, 181, 
+num_roleWin : 210, 109, 0, 0, 77, 56, 
+VillagePoint : 3830
+WolfPoint : 2050
 
 PlayerNumber = 2
-num_game : 10
-num_win : 4
-num_rolePlay : 4, 0, 1, 1, 2, 2, 
-num_roleWin : 0, 0, 0, 0, 2, 2, 
-VillagePoint : 1
-WolfPoint : 50
+num_game : 1000
+num_win : 507
+num_rolePlay : 409, 171, 0, 0, 209, 211, 
+num_roleWin : 219, 106, 0, 0, 94, 88, 
+VillagePoint : 3944
+WolfPoint : 2815
 
 PlayerNumber = 3
-num_game : 10
-num_win : 2
-num_rolePlay : 6, 1, 0, 1, 1, 1, 
-num_roleWin : 0, 0, 0, 0, 1, 1, 
-VillagePoint : 2
-WolfPoint : 25
+num_game : 1000
+num_win : 587
+num_rolePlay : 412, 212, 0, 0, 194, 182, 
+num_roleWin : 254, 133, 0, 0, 91, 109, 
+VillagePoint : 4615
+WolfPoint : 3150
 
 PlayerNumber = 4
-num_game : 10
-num_win : 2
-num_rolePlay : 7, 1, 0, 0, 0, 2, 
-num_roleWin : 0, 0, 0, 0, 0, 2, 
-VillagePoint : 3
-WolfPoint : 30
-
-PlayerNumber = 5
-num_game : 10
-num_win : 3
-num_rolePlay : 6, 0, 1, 0, 0, 3, 
-num_roleWin : 0, 0, 0, 0, 0, 3, 
-VillagePoint : 2
-WolfPoint : 45
-
-PlayerNumber = 6
-num_game : 10
-num_win : 2
-num_rolePlay : 8, 0, 0, 0, 1, 1, 
-num_roleWin : 0, 0, 0, 0, 1, 1, 
-VillagePoint : 1
-WolfPoint : 25
-
-PlayerNumber = 7
-num_game : 10
-num_win : 2
-num_rolePlay : 5, 0, 1, 2, 1, 1, 
-num_roleWin : 0, 0, 0, 0, 1, 1, 
-VillagePoint : 2
-WolfPoint : 25
-
-PlayerNumber = 8
-num_game : 10
-num_win : 3
-num_rolePlay : 4, 1, 2, 0, 0, 3, 
-num_roleWin : 0, 0, 0, 0, 0, 3, 
-VillagePoint : 2
-WolfPoint : 45
-
-PlayerNumber = 9
-num_game : 10
-num_win : 5
-num_rolePlay : 3, 0, 2, 0, 1, 4, 
-num_roleWin : 0, 0, 0, 0, 1, 4, 
-VillagePoint : 0
-WolfPoint : 70
-
-PlayerNumber = 10
-num_game : 10
-num_win : 0
-num_rolePlay : 7, 2, 0, 1, 0, 0, 
-num_roleWin : 0, 0, 0, 0, 0, 0, 
-VillagePoint : 4
-WolfPoint : 0
-
-PlayerNumber = 11
-num_game : 10
-num_win : 2
-num_rolePlay : 5, 1, 0, 2, 0, 2, 
-num_roleWin : 0, 0, 0, 0, 0, 2, 
-VillagePoint : 5
-WolfPoint : 30
-
-PlayerNumber = 12
-num_game : 10
-num_win : 3
-num_rolePlay : 4, 0, 2, 1, 1, 2, 
-num_roleWin : 0, 0, 0, 0, 1, 2, 
-VillagePoint : 2
-WolfPoint : 40
-
-PlayerNumber = 13
-num_game : 10
-num_win : 3
-num_rolePlay : 7, 0, 0, 0, 0, 3, 
-num_roleWin : 0, 0, 0, 0, 0, 3, 
-VillagePoint : 5
-WolfPoint : 45
-
-PlayerNumber = 14
-num_game : 10
-num_win : 3
-num_rolePlay : 6, 1, 0, 0, 1, 2, 
-num_roleWin : 0, 0, 0, 0, 1, 2, 
-VillagePoint : 4
-WolfPoint : 40
+num_game : 1000
+num_win : 516
+num_rolePlay : 398, 197, 0, 0, 186, 219, 
+num_roleWin : 232, 105, 0, 0, 82, 97, 
+VillagePoint : 3998
+WolfPoint : 2775
 

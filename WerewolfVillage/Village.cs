@@ -67,21 +67,9 @@ namespace WerewolfVillage
                         agentList[i].role = Role.占い師;
                         break;
                     case 2:
-                        agentList[i].role = Role.霊能者;
-                        break;
-                    case 3:
-                        agentList[i].role = Role.狩人;
-                        break;
-                    case 4:
                         agentList[i].role = Role.狂人;
                         break;
-                    case 5:
-                        agentList[i].role = Role.人狼;
-                        break;
-                    case 6:
-                        agentList[i].role = Role.人狼;
-                        break;
-                    case 7:
+                    case 3:
                         agentList[i].role = Role.人狼;
                         break;
                     default:

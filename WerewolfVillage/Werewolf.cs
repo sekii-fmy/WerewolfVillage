@@ -63,7 +63,7 @@ namespace WerewolfVillage
         /// </summary>
         public void generateGene()
         {
-            for(int i = 0; i < 15 * villageNumbers; i++)
+            for(int i = 0; i < Form1.num_villager * villageNumbers; i++)
             {
                 geneList.Add(new Agent(new GeneOfParameter(), i));
             }
@@ -84,7 +84,7 @@ namespace WerewolfVillage
                     //villager.Add(new Agent(gene, (k % 15)));  //消す
                     villager.Add(geneList[k]);
                     k++;
-                } while (k < (i + 1) * 15);
+                } while (k < (i + 1) * Form1.num_villager);
                 villageList.Add(new Village(villager));
                 villagers.Add(villager);
             }
@@ -123,20 +123,47 @@ namespace WerewolfVillage
         {
             for (int i = 0; i < villageNumbers; i++)
             {
-                villageList[i].agentList.Sort((a, b) => (b.resultMatch.villagePoint / (b.resultMatch.num_game - b.resultMatch.num_rolePlay[4] - b.resultMatch.num_rolePlay[5])) - (a.resultMatch.villagePoint / (a.resultMatch.num_game - a.resultMatch.num_rolePlay[4] - a.resultMatch.num_rolePlay[5])));
+                for (int p = 0; p < Form1.num_villager; p++)
+                {
+                    ResultOfMatch result = villageList[i].agentList[p].resultMatch;
+                    if ((result.num_game - result.num_rolePlay[4] - result.num_rolePlay[5]) != 0)
+                    {
+                        villageList[i].agentList[p].resultMatch.villagePoint = result.villagePoint / (result.num_game - result.num_rolePlay[4] - result.num_rolePlay[5]);
+                    }
+                    else
+                    {
+                        villageList[i].agentList[p].resultMatch.villagePoint = 0;
+                    }
+
+                    if ((result.num_rolePlay[4] + result.num_rolePlay[5]) != 0)
+                    {
+                        villageList[i].agentList[p].resultMatch.wolfPoint = result.wolfPoint / (result.num_rolePlay[4] + result.num_rolePlay[5]);
+                    }
+                    else
+                    {
+                        villageList[i].agentList[p].resultMatch.wolfPoint = 0;
+                    }
+                }
+                villageList[i].agentList.Sort((a, b) => (b.resultMatch.villagePoint) - (a.resultMatch.villagePoint));
                 Agent village_1st = copyAgent(villageList[i].agentList[0], villageList[i].agentList[0].resultMatch.playerNum);
                 Agent village_2nd = copyAgent(villageList[i].agentList[1], villageList[i].agentList[1].resultMatch.playerNum);
 
-                villageList[i].agentList.Sort((a, b) => (b.resultMatch.wolfPoint / (b.resultMatch.num_rolePlay[4] + b.resultMatch.num_rolePlay[5])) - (a.resultMatch.wolfPoint / (a.resultMatch.num_rolePlay[4] + a.resultMatch.num_rolePlay[5])));
+                villageList[i].agentList.Sort((a, b) => (b.resultMatch.wolfPoint) - (a.resultMatch.wolfPoint));
                 Agent wolf_1st = copyAgent(villageList[i].agentList[0], villageList[i].agentList[0].resultMatch.playerNum);
                 Agent wolf_2nd = copyAgent(villageList[i].agentList[1], villageList[i].agentList[1].resultMatch.playerNum);
                 //スコアでソート
 
                 villageList[i].agentList[0] = village_1st;       //村ポイント1位
-                villageList[i].agentList[1] = village_2nd;       //村ポイント2位
-                villageList[i].agentList[2] = wolf_1st;          //人狼ポイント1位
-                villageList[i].agentList[3] = wolf_2nd;          //人狼ポイント2位
+                //villageList[i].agentList[1] = village_2nd;       //村ポイント2位
+                villageList[i].agentList[1] = wolf_1st;          //人狼ポイント1位
+                //villageList[i].agentList[3] = wolf_2nd;          //人狼ポイント2位
 
+                villageList[i].agentList[2] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[1], villageList[i].agentList[0]), villageList[i].agentList[2].resultMatch.playerNum);
+                villageList[i].agentList[3] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[1], villageList[i].agentList[0]), villageList[i].agentList[3].resultMatch.playerNum);
+                villageList[i].agentList[4] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[1], villageList[i].agentList[0]), villageList[i].agentList[4].resultMatch.playerNum);
+                //村1位,人狼1位の子孫3個体
+
+                /*
                 villageList[i].agentList[4] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[4].resultMatch.playerNum);
                 villageList[i].agentList[5] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[5].resultMatch.playerNum);
                 villageList[i].agentList[6] = new Agent(cross(villageList[i].agentList[0], villageList[i].agentList[2], villageList[i].agentList[0]), villageList[i].agentList[6].resultMatch.playerNum);
@@ -152,7 +179,7 @@ namespace WerewolfVillage
                 villageList[i].agentList[12] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[2], villageList[i].agentList[1]), villageList[i].agentList[12].resultMatch.playerNum);
                 villageList[i].agentList[13] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[2], villageList[i].agentList[2]), villageList[i].agentList[13].resultMatch.playerNum);
                 //村2位,人狼1位の子孫2個体
-
+                
                 if (rnd.Next() % 2 == 0)
                 {
                     villageList[i].agentList[14] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[3], villageList[i].agentList[1]), villageList[i].agentList[14].resultMatch.playerNum);
@@ -162,7 +189,7 @@ namespace WerewolfVillage
                     villageList[i].agentList[14] = new Agent(cross(villageList[i].agentList[1], villageList[i].agentList[3], villageList[i].agentList[3]), villageList[i].agentList[14].resultMatch.playerNum);
                 }
                 //村2位,人狼2位の子孫1個体
-
+                */
 
                 for (int k = 0; k < Form1.num_villager; k++)
                 {
@@ -314,7 +341,7 @@ namespace WerewolfVillage
             List<Agent> exAgent = new List<Agent>();
             for(int i = 0; i < villageNumbers; i++)
             {
-                for (int k = 0; k < 7; k++)
+                for (int k = 0; k < (Form1.num_villager / 2); k++)
                 {
                     rndary = rnd.Next(0, villageList[i].agentList.Count - 1);
                     exAgent.Add(villageList[i].agentList[rndary]);
@@ -327,7 +354,7 @@ namespace WerewolfVillage
 
             for (int i = 0; i < villageNumbers; i++)
             {
-                for (int k = 0; k < 7; k++)
+                for (int k = 0; k < (Form1.num_villager / 2); k++)
                 {
                     villageList[i].agentList.Add(exAgent[num]);
                     num++;
